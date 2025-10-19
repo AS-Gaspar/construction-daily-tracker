@@ -16,6 +16,12 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
+private const val TEST_API_KEY = "test-api-key"
+
+private fun HttpRequestBuilder.withApiKey() {
+    header("X-API-Key", TEST_API_KEY)
+}
+
 class PayrollFlowEndToEndTest {
 
     companion object {
@@ -36,6 +42,7 @@ class PayrollFlowEndToEndTest {
         application { testModule() }
 
         val workResponse = client.post("/works") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"name":"Obra Central"}""")
         }
@@ -44,6 +51,7 @@ class PayrollFlowEndToEndTest {
         println("✓ Obra criada: ${work.name} (ID: ${work.id})")
 
         val roleResponse = client.post("/roles") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"title":"Pedreiro"}""")
         }
@@ -52,6 +60,7 @@ class PayrollFlowEndToEndTest {
         println("✓ Cargo criado: ${role.title} (ID: ${role.id})")
 
         val employeeResponse = client.post("/employees") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""
                 {
@@ -71,6 +80,7 @@ class PayrollFlowEndToEndTest {
         val periodEnd = "2024-11-05"
 
         val payrollResponse = client.post("/monthly-payrolls") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""
                 {
@@ -95,6 +105,7 @@ class PayrollFlowEndToEndTest {
         assertNull(payroll.closedAt)
 
         val saturdayResponse = client.post("/day-adjustments") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""
                 {
@@ -117,6 +128,7 @@ class PayrollFlowEndToEndTest {
         println("  - Pagamento atualizado: R$${updatedPayroll.totalPayment}")
 
         val absenceResponse = client.post("/day-adjustments") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""
                 {
@@ -139,6 +151,7 @@ class PayrollFlowEndToEndTest {
         println("  - Pagamento atualizado: R$${updatedPayroll.totalPayment}")
 
               val saturday2Response = client.post("/day-adjustments") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""
                 {
@@ -158,7 +171,9 @@ class PayrollFlowEndToEndTest {
         println("  - Dias finais: ${updatedPayroll.finalWorkedDays}")
         println("  - Pagamento final: R$${updatedPayroll.totalPayment}")
 
-              val adjustmentsResponse = client.get("/day-adjustments/employee/${employee.id}")
+              val adjustmentsResponse = client.get("/day-adjustments/employee/${employee.id}") {
+            withApiKey()
+        }
         assertEquals(HttpStatusCode.OK, adjustmentsResponse.status)
         val adjustments = Json.decodeFromString<List<DayAdjustment>>(adjustmentsResponse.bodyAsText())
 
@@ -170,7 +185,9 @@ class PayrollFlowEndToEndTest {
         assertEquals("2024-10-15", adjustments[1].date)
         assertEquals("2024-10-12", adjustments[2].date)
 
-                val deleteResponse = client.delete("/day-adjustments/${saturday.id}")
+                val deleteResponse = client.delete("/day-adjustments/${saturday.id}") {
+            withApiKey()
+        }
         assertEquals(HttpStatusCode.OK, deleteResponse.status)
         println("✓ Primeiro sábado removido")
 
@@ -180,7 +197,9 @@ class PayrollFlowEndToEndTest {
         println("  - Dias após remoção: ${updatedPayroll.finalWorkedDays}")
         println("  - Pagamento após remoção: R$${updatedPayroll.totalPayment}")
 
-             val activeResponse = client.get("/monthly-payrolls/employee/${employee.id}/active")
+             val activeResponse = client.get("/monthly-payrolls/employee/${employee.id}/active") {
+            withApiKey()
+        }
         assertEquals(HttpStatusCode.OK, activeResponse.status)
         val activePayroll = Json.decodeFromString<MonthlyPayroll>(activeResponse.bodyAsText())
         assertEquals(payroll.id, activePayroll.id)
@@ -188,6 +207,7 @@ class PayrollFlowEndToEndTest {
         println("✓ Folha ativa confirmada (ID: ${activePayroll.id})")
 
            val closeResponse = client.put("/monthly-payrolls/${payroll.id}/close") {
+            withApiKey()
             contentType(ContentType.Application.Json)
         }
         assertEquals(HttpStatusCode.OK, closeResponse.status)
@@ -199,7 +219,9 @@ class PayrollFlowEndToEndTest {
         println("  - Fechada em: ${closedPayroll.closedAt}")
 
         // Verificar que não há mais folha ativa
-        val noActiveResponse = client.get("/monthly-payrolls/employee/${employee.id}/active")
+        val noActiveResponse = client.get("/monthly-payrolls/employee/${employee.id}/active") {
+            withApiKey()
+        }
         assertEquals(HttpStatusCode.NotFound, noActiveResponse.status)
         println("✓ Confirmado que não há folha ativa")
 
@@ -207,6 +229,7 @@ class PayrollFlowEndToEndTest {
         val nextPeriodEnd = "2024-12-05"
 
         val nextPayrollResponse = client.post("/monthly-payrolls") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""
                 {
@@ -226,7 +249,9 @@ class PayrollFlowEndToEndTest {
 
         assertNull(nextPayroll.closedAt)
 
-          val historyResponse = client.get("/monthly-payrolls/employee/${employee.id}")
+          val historyResponse = client.get("/monthly-payrolls/employee/${employee.id}") {
+            withApiKey()
+        }
         assertEquals(HttpStatusCode.OK, historyResponse.status)
         val history = Json.decodeFromString<List<MonthlyPayroll>>(historyResponse.bodyAsText())
 
@@ -264,7 +289,9 @@ class PayrollFlowEndToEndTest {
         client: HttpClient,
         payrollId: Int
     ): MonthlyPayroll {
-        val response = client.get("/monthly-payrolls/$payrollId")
+        val response = client.get("/monthly-payrolls/$payrollId") {
+            withApiKey()
+        }
         assertEquals(HttpStatusCode.OK, response.status)
         return Json.decodeFromString(response.bodyAsText())
     }

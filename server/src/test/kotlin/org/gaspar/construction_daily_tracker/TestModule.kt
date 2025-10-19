@@ -8,6 +8,7 @@ import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.gaspar.construction_daily_tracker.auth.ApiKeyAuth
 import org.gaspar.construction_daily_tracker.repository.*
 import org.gaspar.construction_daily_tracker.routes.*
 
@@ -26,12 +27,17 @@ fun Application.testModule() {
     install(CORS) {
         anyHost()
         allowHeader("Content-Type")
+        allowHeader("X-API-Key")
     }
 
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             call.respondText(text = "500: $cause", status = io.ktor.http.HttpStatusCode.InternalServerError)
         }
+    }
+
+    install(ApiKeyAuth) {
+        apiKey = "test-api-key"
     }
 
     // Initialize repositories

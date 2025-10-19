@@ -16,6 +16,12 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+private const val TEST_API_KEY = "test-api-key"
+
+private fun HttpRequestBuilder.withApiKey() {
+    header("X-API-Key", TEST_API_KEY)
+}
+
 class EmployeeIntegrationTest {
 
     companion object {
@@ -37,6 +43,7 @@ class EmployeeIntegrationTest {
     private suspend fun ApplicationTestBuilder.createWorkAndRole() {
         // Criar obra
         val workResponse = client.post("/works") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"name":"Obra Teste"}""")
         }
@@ -45,6 +52,7 @@ class EmployeeIntegrationTest {
 
         // Criar cargo
         val roleResponse = client.post("/roles") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"title":"Pedreiro"}""")
         }
@@ -60,6 +68,7 @@ class EmployeeIntegrationTest {
 
         // When: Criar funcionário
         val response = client.post("/employees") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""
                 {
@@ -89,6 +98,7 @@ class EmployeeIntegrationTest {
         createWorkAndRole()
 
         val work2Response = client.post("/works") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"name":"Obra 2"}""")
         }
@@ -97,6 +107,7 @@ class EmployeeIntegrationTest {
         // Criar funcionários na primeira obra
         repeat(2) { i ->
             client.post("/employees") {
+                withApiKey()
                 contentType(ContentType.Application.Json)
                 setBody("""
                     {
@@ -112,6 +123,7 @@ class EmployeeIntegrationTest {
 
         // Criar funcionário na segunda obra
         client.post("/employees") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""
                 {
@@ -125,7 +137,9 @@ class EmployeeIntegrationTest {
         }
 
         // When: Buscar funcionários da primeira obra
-        val response = client.get("/employees/work/$workId")
+        val response = client.get("/employees/work/$workId") {
+            withApiKey()
+        }
 
         // Then: Deve retornar apenas funcionários da primeira obra
         assertEquals(HttpStatusCode.OK, response.status)
@@ -141,6 +155,7 @@ class EmployeeIntegrationTest {
         createWorkAndRole()
 
         val createResponse = client.post("/employees") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""
                 {
@@ -156,6 +171,7 @@ class EmployeeIntegrationTest {
 
         // When: Atualizar valor diário
         val response = client.put("/employees/${created.id}") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"dailyValue": "200.00"}""")
         }
@@ -164,7 +180,9 @@ class EmployeeIntegrationTest {
         assertEquals(HttpStatusCode.OK, response.status)
 
         // E o valor deve estar atualizado
-        val getResponse = client.get("/employees/${created.id}")
+        val getResponse = client.get("/employees/${created.id}") {
+            withApiKey()
+        }
         val updated = Json.decodeFromString<Employee>(getResponse.bodyAsText())
         assertEquals("200.00", updated.dailyValue)
     }
@@ -177,6 +195,7 @@ class EmployeeIntegrationTest {
 
         // When: Tentar criar funcionário com valor inválido
         val response = client.post("/employees") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""
                 {

@@ -10,6 +10,7 @@ import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.gaspar.construction_daily_tracker.auth.ApiKeyAuth
 import org.gaspar.construction_daily_tracker.database.DatabaseFactory
 import org.gaspar.construction_daily_tracker.repository.*
 import org.gaspar.construction_daily_tracker.routes.*
@@ -35,6 +36,7 @@ fun Application.module() {
     install(CORS) {
         anyHost()
         allowHeader("Content-Type")
+        allowHeader("X-API-Key")
     }
 
     install(StatusPages) {
@@ -42,6 +44,8 @@ fun Application.module() {
             call.respondText(text = "500: $cause", status = io.ktor.http.HttpStatusCode.InternalServerError)
         }
     }
+
+    install(ApiKeyAuth)
 
     // Inicializar repositórios
     val workRepo = WorkRepository()

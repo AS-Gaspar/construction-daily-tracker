@@ -16,4 +16,30 @@ captures
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
-node_modules/
+CLAUDE.md
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# API keys and secrets
+secrets.properties
+api-keys.txt
+credentials.json
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Keystore files
+*.jks
+*.keystore
+*.p12
+
+# Android Studio
+*.apk
+*.aab
+output.json

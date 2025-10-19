@@ -14,6 +14,12 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+private const val TEST_API_KEY = "test-api-key"
+
+private fun HttpRequestBuilder.withApiKey() {
+    header("X-API-Key", TEST_API_KEY)
+}
+
 class WorkRoutesTest {
 
     companion object {
@@ -35,7 +41,9 @@ class WorkRoutesTest {
             testModule()
         }
         // When: Buscar obras sem criar nenhuma
-        val response = client.get("/works")
+        val response = client.get("/works") {
+            withApiKey()
+        }
 
         // Then: Deve retornar lista vazia
         assertEquals(HttpStatusCode.OK, response.status)
@@ -50,6 +58,7 @@ class WorkRoutesTest {
 
         // When: Criar obra
         val response = client.post("/works") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody(requestBody)
         }
@@ -68,16 +77,20 @@ class WorkRoutesTest {
         application { testModule() }
         // Given: Múltiplas obras criadas
         client.post("/works") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"name":"Obra 1"}""")
         }
         client.post("/works") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"name":"Obra 2"}""")
         }
 
         // When: Listar obras
-        val response = client.get("/works")
+        val response = client.get("/works") {
+            withApiKey()
+        }
 
         // Then: Deve retornar todas as obras
         assertEquals(HttpStatusCode.OK, response.status)
@@ -90,13 +103,16 @@ class WorkRoutesTest {
         application { testModule() }
         // Given: Uma obra criada
         val createResponse = client.post("/works") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"name":"Obra Específica"}""")
         }
         val created = Json.decodeFromString<Work>(createResponse.bodyAsText())
 
         // When: Buscar obra por ID
-        val response = client.get("/works/${created.id}")
+        val response = client.get("/works/${created.id}") {
+            withApiKey()
+        }
 
         // Then: Deve retornar a obra
         assertEquals(HttpStatusCode.OK, response.status)
@@ -109,7 +125,9 @@ class WorkRoutesTest {
     fun `GET works by invalid id should return 404`() = testApplication {
         application { testModule() }
         // When: Buscar obra inexistente
-        val response = client.get("/works/999")
+        val response = client.get("/works/999") {
+            withApiKey()
+        }
 
         // Then: Deve retornar 404
         assertEquals(HttpStatusCode.NotFound, response.status)
@@ -120,6 +138,7 @@ class WorkRoutesTest {
         application { testModule() }
         // Given: Uma obra criada
         val createResponse = client.post("/works") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"name":"Nome Antigo"}""")
         }
@@ -127,6 +146,7 @@ class WorkRoutesTest {
 
         // When: Atualizar nome
         val response = client.put("/works/${created.id}") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"name":"Nome Novo"}""")
         }
@@ -135,7 +155,9 @@ class WorkRoutesTest {
         assertEquals(HttpStatusCode.OK, response.status)
 
         // E o nome deve estar atualizado
-        val getResponse = client.get("/works/${created.id}")
+        val getResponse = client.get("/works/${created.id}") {
+            withApiKey()
+        }
         val updated = Json.decodeFromString<Work>(getResponse.bodyAsText())
         assertEquals("Nome Novo", updated.name)
     }
@@ -145,19 +167,24 @@ class WorkRoutesTest {
         application { testModule() }
         // Given: Uma obra criada
         val createResponse = client.post("/works") {
+            withApiKey()
             contentType(ContentType.Application.Json)
             setBody("""{"name":"Obra a Deletar"}""")
         }
         val created = Json.decodeFromString<Work>(createResponse.bodyAsText())
 
         // When: Deletar obra
-        val deleteResponse = client.delete("/works/${created.id}")
+        val deleteResponse = client.delete("/works/${created.id}") {
+            withApiKey()
+        }
 
         // Then: Deve retornar 200 OK
         assertEquals(HttpStatusCode.OK, deleteResponse.status)
 
         // E a obra não deve mais existir
-        val getResponse = client.get("/works/${created.id}")
+        val getResponse = client.get("/works/${created.id}") {
+            withApiKey()
+        }
         assertEquals(HttpStatusCode.NotFound, getResponse.status)
     }
 }

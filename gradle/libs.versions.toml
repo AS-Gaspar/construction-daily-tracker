@@ -24,6 +24,7 @@ micrometer = "1.13.0"
 kotlinx-serialization = "1.7.1"
 flyway = "10.15.0"
 jbcrypt = "0.4"
+androidx-security = "1.1.0-alpha06"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -69,6 +70,15 @@ micrometer-registryPrometheus = { module = "io.micrometer:micrometer-registry-pr
 # Serialization
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 jbcrypt = { module = "org.mindrot:jbcrypt", version.ref = "jbcrypt" }
+
+# Android Security
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidx-security" }
+
+# Ktor Client
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
 
 
 [plugins]
