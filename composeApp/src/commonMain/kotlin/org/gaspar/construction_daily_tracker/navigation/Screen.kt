@@ -22,4 +22,9 @@ sealed class Screen(val route: String, val title: String) {
 
     data class RoleDetail(val roleId: Int? = null) :
         Screen("role/${roleId ?: "new"}", "Role Details")
+
+    data class ClosedPayrollDetail(
+        val periodStartDate: String,
+        val periodEndDate: String
+    ) : Screen("payroll/$periodStartDate/$periodEndDate", "Payroll Details")
 }

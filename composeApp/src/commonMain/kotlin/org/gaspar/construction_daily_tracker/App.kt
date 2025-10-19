@@ -3,6 +3,7 @@ package org.gaspar.construction_daily_tracker
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.gaspar.construction_daily_tracker.data.rememberCredentialStorage
 import org.gaspar.construction_daily_tracker.navigation.Screen
 import org.gaspar.construction_daily_tracker.ui.*
 import org.gaspar.construction_daily_tracker.ui.screens.*
@@ -10,13 +11,14 @@ import org.gaspar.construction_daily_tracker.ui.screens.*
 @Composable
 fun App() {
     MaterialTheme {
-        val viewModel: AppViewModel = viewModel { AppViewModel() }
+        val credentialStorage = rememberCredentialStorage()
+        val viewModel: AppViewModel = viewModel { AppViewModel(credentialStorage) }
 
         // Show settings screen if API is not configured
         if (!viewModel.isApiConfigured) {
             SettingsScreen(
-                currentServerUrl = "",
-                currentApiKey = "",
+                currentServerUrl = viewModel.getCurrentServerUrl(),
+                currentApiKey = viewModel.getCurrentApiKey(),
                 onSave = { serverUrl, apiKey ->
                     viewModel.configureApi(serverUrl, apiKey)
                 },
@@ -51,14 +53,10 @@ fun App() {
                 )
             }
 
-            if (viewModel.showGeneratePayrollDialog) {
-                GeneratePayrollDialog(
-                    onDismiss = { viewModel.showGeneratePayrollDialog = false },
-                    onConfirm = { periodStartDate ->
-                        viewModel.generatePayroll(periodStartDate)
-                    }
-                )
-            }
+            // TODO: Implement GeneratePayrollDialog if needed
+            // if (viewModel.showGeneratePayrollDialog) {
+            //     GeneratePayrollDialog(...)
+            // }
         }
     }
 }
@@ -99,6 +97,8 @@ fun AppContent(viewModel: AppViewModel) {
                 employees = viewModel.employees,
                 works = viewModel.works,
                 roles = viewModel.roles,
+                payrolls = viewModel.payrolls,
+                adjustments = viewModel.dayAdjustments,
                 isLoading = viewModel.isLoading,
                 onAddEmployee = {
                     viewModel.navigationState.navigateTo(Screen.EmployeeDetail())
@@ -145,14 +145,41 @@ fun AppContent(viewModel: AppViewModel) {
                 isLoading = viewModel.isLoading,
                 onBack = { viewModel.navigationState.navigateBack() },
                 onRefresh = { viewModel.refreshAll() },
-                onGeneratePayroll = { viewModel.showGeneratePayrollDialog = true }
+                onPeriodClick = { period ->
+                    if (period.isCurrent) {
+                        // Navigate to Employees for current month
+                        viewModel.navigationState.navigateTo(Screen.Employees)
+                    } else {
+                        // Navigate to closed payroll detail
+                        viewModel.navigationState.navigateTo(
+                            Screen.ClosedPayrollDetail(
+                                periodStartDate = period.periodStartDate,
+                                periodEndDate = period.periodEndDate
+                            )
+                        )
+                    }
+                }
+            )
+        }
+
+        is Screen.ClosedPayrollDetail -> {
+            ClosedPayrollDetailScreen(
+                periodStartDate = screen.periodStartDate,
+                periodEndDate = screen.periodEndDate,
+                payrolls = viewModel.payrolls,
+                employees = viewModel.employees,
+                works = viewModel.works,
+                roles = viewModel.roles,
+                adjustments = viewModel.dayAdjustments,
+                isLoading = viewModel.isLoading,
+                onBack = { viewModel.navigationState.navigateBack() }
             )
         }
 
         Screen.Settings -> {
             SettingsScreen(
-                currentServerUrl = "",
-                currentApiKey = "",
+                currentServerUrl = viewModel.getCurrentServerUrl(),
+                currentApiKey = viewModel.getCurrentApiKey(),
                 onSave = { serverUrl, apiKey ->
                     viewModel.configureApi(serverUrl, apiKey)
                 },

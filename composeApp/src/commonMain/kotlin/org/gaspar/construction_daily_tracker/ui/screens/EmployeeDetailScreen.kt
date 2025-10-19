@@ -4,14 +4,21 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.gaspar.construction_daily_tracker.model.Employee
 import org.gaspar.construction_daily_tracker.model.Role
 import org.gaspar.construction_daily_tracker.model.Work
+
+// Tailwind blue-600
+private val TailwindBlue = Color(0xFF2563EB)
 
 /**
  * Screen for adding or editing an employee.
@@ -41,9 +48,17 @@ fun EmployeeDetailScreen(
                 title = { Text(if (employee == null) "Add Employee" else "Edit Employee") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Text("←", style = MaterialTheme.typography.headlineMedium)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = TailwindBlue,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
             )
         }
     ) { padding ->
@@ -179,12 +194,16 @@ fun EmployeeDetailScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !isLoading
+                enabled = !isLoading,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = TailwindBlue,
+                    contentColor = Color.White
+                )
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = Color.White
                     )
                 } else {
                     Text(if (employee == null) "Add Employee" else "Save Changes")

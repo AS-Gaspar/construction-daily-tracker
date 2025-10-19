@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.ktor.client.*
 import kotlinx.coroutines.launch
+import org.gaspar.construction_daily_tracker.data.CredentialStorage
 import org.gaspar.construction_daily_tracker.model.*
 import org.gaspar.construction_daily_tracker.navigation.NavigationState
 import org.gaspar.construction_daily_tracker.navigation.Screen
@@ -13,7 +14,7 @@ import org.gaspar.construction_daily_tracker.network.*
 /**
  * Main ViewModel for the app, managing all data and navigation.
  */
-class AppViewModel : ViewModel() {
+class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel() {
 
     // Navigation
     val navigationState = NavigationState()
@@ -35,6 +36,11 @@ class AppViewModel : ViewModel() {
 
     var errorMessage by mutableStateOf<String?>(null)
         private set
+
+    init {
+        // Try to load saved credentials and auto-configure
+        loadSavedCredentials()
+    }
 
     // Data
     var works by mutableStateOf<List<Work>>(emptyList())
@@ -59,9 +65,30 @@ class AppViewModel : ViewModel() {
     var showGeneratePayrollDialog by mutableStateOf(false)
 
     /**
-     * Configure API client with server URL and API key.
+     * Load saved credentials from secure storage and auto-configure if available.
      */
-    fun configureApi(serverUrl: String, apiKey: String) {
+    private fun loadSavedCredentials() {
+        if (credentialStorage.hasApiKey() && credentialStorage.hasServerUrl()) {
+            val serverUrl = credentialStorage.getServerUrl()
+            val apiKey = credentialStorage.getApiKey()
+            if (apiKey != null) {
+                configureApi(serverUrl, apiKey, saveCredentials = false)
+            }
+        }
+    }
+
+    /**
+     * Configure API client with server URL and API key.
+     * @param saveCredentials If true, saves credentials to secure storage
+     */
+    fun configureApi(serverUrl: String, apiKey: String, saveCredentials: Boolean = true) {
+        // Save credentials to secure storage
+        if (saveCredentials) {
+            credentialStorage.saveServerUrl(serverUrl)
+            credentialStorage.saveApiKey(apiKey)
+        }
+
+        // Create HTTP client and repositories
         httpClient = ApiClient.create(serverUrl, apiKey)
         workRepository = WorkRepository(httpClient!!)
         roleRepository = RoleRepository(httpClient!!)
@@ -72,6 +99,20 @@ class AppViewModel : ViewModel() {
 
         // Load initial data
         refreshAll()
+    }
+
+    /**
+     * Get current server URL from storage.
+     */
+    fun getCurrentServerUrl(): String {
+        return credentialStorage.getServerUrl()
+    }
+
+    /**
+     * Get current API key from storage (for display in settings).
+     */
+    fun getCurrentApiKey(): String {
+        return credentialStorage.getApiKey() ?: ""
     }
 
     /**
