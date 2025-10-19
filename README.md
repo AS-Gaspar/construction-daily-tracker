@@ -1,4 +1,4 @@
-This is a Kotlin Multiplatform project targeting Android, Web, Server.
+This is a Kotlin Multiplatform project targeting Android, Server.
 
 * [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
   It contains several subfolders:
@@ -42,30 +42,6 @@ in your IDE’s toolbar or run it directly from the terminal:
   ```shell
   .\gradlew.bat :server:run
   ```
-
-### Build and Run Web Application
-
-To build and run the development version of the web app, use the run configuration from the run widget
-in your IDE's toolbar or run it directly from the terminal:
-
-- for the Wasm target (faster, modern browsers):
-    - on macOS/Linux
-      ```shell
-      ./gradlew :composeApp:wasmJsBrowserDevelopmentRun
-      ```
-    - on Windows
-      ```shell
-      .\gradlew.bat :composeApp:wasmJsBrowserDevelopmentRun
-      ```
-- for the JS target (slower, supports older browsers):
-    - on macOS/Linux
-      ```shell
-      ./gradlew :composeApp:jsBrowserDevelopmentRun
-      ```
-    - on Windows
-      ```shell
-      .\gradlew.bat :composeApp:jsBrowserDevelopmentRun
-      ```
 
 ---
 
