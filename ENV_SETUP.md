@@ -83,24 +83,6 @@ source .env.local
 ./gradlew :server:run
 ```
 
-### Local Development (Windows)
-
-Create a `env.local.bat` file:
-```batch
-set API_KEY=dev-test-key-12345
-set DB_URL=jdbc:postgresql://localhost:5432/construction_tracker
-set DB_USER=postgres
-set DB_PASSWORD=postgres
-```
-
-Run it before starting server:
-```batch
-env.local.bat
-gradlew.bat :server:run
-```
-
----
-
 ## Setting Up for Production
 
 ### Docker
