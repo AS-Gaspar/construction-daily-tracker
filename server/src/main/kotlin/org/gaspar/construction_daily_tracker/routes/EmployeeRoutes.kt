@@ -115,8 +115,8 @@ fun Route.employeeRoutes(repository: EmployeeRepository) {
                 dailyValue
             )
 
-            if (updated) {
-                call.respond(HttpStatusCode.OK, "Funcionário atualizado")
+            if (updated != null) {
+                call.respond(HttpStatusCode.OK, updated)
             } else {
                 call.respond(HttpStatusCode.NotFound, "Funcionário não encontrado")
             }

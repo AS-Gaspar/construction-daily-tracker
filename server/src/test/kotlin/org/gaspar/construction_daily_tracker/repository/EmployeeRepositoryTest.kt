@@ -138,13 +138,11 @@ class EmployeeRepositoryTest {
         // When: Atualizar nome
         val updated = employeeRepo.update(employee.id, name = "José")
 
-        // Then: Atualização deve ser bem-sucedida
-        assertTrue(updated)
-
-        // E o nome deve estar atualizado
-        val found = employeeRepo.findById(employee.id)
-        assertEquals("José", found?.name)
-        assertEquals("Silva", found?.surname) // Sobrenome não mudou
+        // Then: Atualização deve ser bem-sucedida e retornar o funcionário atualizado
+        assertNotNull(updated)
+        assertEquals("José", updated.name)
+        assertEquals("Silva", updated.surname) // Sobrenome não mudou
+        assertEquals(employee.id, updated.id)
     }
 
     @Test
@@ -156,12 +154,10 @@ class EmployeeRepositoryTest {
         val newDailyValue = BigDecimal("200.00")
         val updated = employeeRepo.update(employee.id, dailyValue = newDailyValue)
 
-        // Then: Atualização deve ser bem-sucedida
-        assertTrue(updated)
-
-        // E o valor deve estar atualizado
-        val found = employeeRepo.findById(employee.id)
-        assertEquals("200.00", found?.dailyValue)
+        // Then: Atualização deve ser bem-sucedida e retornar o funcionário atualizado
+        assertNotNull(updated)
+        assertEquals("200.00", updated.dailyValue)
+        assertEquals(employee.id, updated.id)
     }
 
     @Test
@@ -179,15 +175,14 @@ class EmployeeRepositoryTest {
             dailyValue = BigDecimal("300.00")
         )
 
-        // Then: Todas as atualizações devem ser aplicadas
-        assertTrue(updated)
-
-        val found = employeeRepo.findById(employee.id)
-        assertEquals("José", found?.name)
-        assertEquals("Santos", found?.surname)
-        assertEquals(newRole.id, found?.roleId)
-        assertEquals("300.00", found?.dailyValue)
-        assertEquals(workId, found?.workId) // Work não mudou
+        // Then: Todas as atualizações devem ser aplicadas e retornar o funcionário atualizado
+        assertNotNull(updated)
+        assertEquals("José", updated.name)
+        assertEquals("Santos", updated.surname)
+        assertEquals(newRole.id, updated.roleId)
+        assertEquals("300.00", updated.dailyValue)
+        assertEquals(workId, updated.workId) // Work não mudou
+        assertEquals(employee.id, updated.id)
     }
 
     @Test

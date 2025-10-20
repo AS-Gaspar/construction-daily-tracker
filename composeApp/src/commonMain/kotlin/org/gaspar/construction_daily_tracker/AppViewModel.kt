@@ -37,6 +37,9 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
     var errorMessage by mutableStateOf<String?>(null)
         private set
 
+    var successMessage by mutableStateOf<String?>(null)
+        private set
+
     init {
         // Try to load saved credentials and auto-configure
         loadSavedCredentials()
@@ -231,6 +234,43 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
         }
     }
 
+    fun updateWork(id: Int, name: String) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            successMessage = null
+            try {
+                workRepository?.updateWork(id, name)
+                works = workRepository?.getAllWorks() ?: emptyList()
+                successMessage = "Work updated successfully!"
+            } catch (e: Exception) {
+                errorMessage = "Failed to update work: ${e.message}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun clearSuccessMessage() {
+        successMessage = null
+    }
+
+    fun deleteWork(id: Int) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            try {
+                workRepository?.deleteWork(id)
+                works = workRepository?.getAllWorks() ?: emptyList()
+                navigationState.navigateBack()
+            } catch (e: Exception) {
+                errorMessage = "Failed to delete work: ${e.message}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
     // Role operations
     fun createRole(title: String) {
         viewModelScope.launch {
@@ -267,6 +307,49 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
             } catch (e: Exception) {
                 errorMessage = "Failed to create employee: ${e.message}"
                 println("API connection error in createEmployee: ${e.stackTraceToString()}")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun updateEmployee(
+        id: Int,
+        name: String,
+        surname: String,
+        roleId: Int,
+        workId: Int,
+        dailyValue: String
+    ) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            try {
+                employeeRepository?.updateEmployee(id, name, surname, roleId, workId, dailyValue)
+                employees = employeeRepository?.getAllEmployees() ?: emptyList()
+                // Also refresh payrolls as employee changes might affect them
+                payrolls = payrollRepository?.getAllPayrolls() ?: emptyList()
+                navigationState.navigateBack()
+            } catch (e: Exception) {
+                errorMessage = "Failed to update employee: ${e.message}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun deleteEmployee(id: Int) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            try {
+                employeeRepository?.deleteEmployee(id)
+                employees = employeeRepository?.getAllEmployees() ?: emptyList()
+                // Also refresh payrolls as employee deletion might affect them
+                payrolls = payrollRepository?.getAllPayrolls() ?: emptyList()
+                navigationState.navigateBack()
+            } catch (e: Exception) {
+                errorMessage = "Failed to delete employee: ${e.message}"
             } finally {
                 isLoading = false
             }

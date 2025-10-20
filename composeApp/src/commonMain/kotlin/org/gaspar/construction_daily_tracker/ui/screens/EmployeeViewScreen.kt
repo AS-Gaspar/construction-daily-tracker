@@ -28,11 +28,12 @@ private val TailwindAmber = Color(0xFFF59E0B)
 private val TailwindRed = Color(0xFFDC2626)
 
 /**
- * Screen showing detailed employee information.
+ * Screen showing detailed employee information (VIEW ONLY).
+ * Shows edit and delete buttons in the lower right corner.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmployeeDetailScreen(
+fun EmployeeViewScreen(
     employee: Employee?,
     works: List<Work>,
     roles: List<Role>,
@@ -40,9 +41,8 @@ fun EmployeeDetailScreen(
     adjustments: List<DayAdjustment> = emptyList(),
     isLoading: Boolean,
     onBack: () -> Unit,
-    onEdit: (Employee) -> Unit = {},
-    onDelete: (Employee) -> Unit = {},
-    onSave: (name: String, surname: String, roleId: Int, workId: Int, dailyValue: String) -> Unit = { _, _, _, _, _ -> }
+    onEdit: (Employee) -> Unit,
+    onDelete: (Employee) -> Unit
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -95,18 +95,6 @@ fun EmployeeDetailScreen(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Delete button (red)
-                    FloatingActionButton(
-                        onClick = { showDeleteDialog = true },
-                        containerColor = TailwindRed,
-                        contentColor = Color.White
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Employee"
-                        )
-                    }
-
                     // Edit button (amber/yellow)
                     FloatingActionButton(
                         onClick = { onEdit(employee) },
@@ -116,6 +104,18 @@ fun EmployeeDetailScreen(
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit Employee"
+                        )
+                    }
+
+                    // Delete button (red)
+                    FloatingActionButton(
+                        onClick = { showDeleteDialog = true },
+                        containerColor = TailwindRed,
+                        contentColor = Color.White
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Employee"
                         )
                     }
                 }
@@ -171,7 +171,7 @@ fun EmployeeDetailScreen(
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text(
-                                    text = "${employee.name} ${employee.surname}",
+                                    text = "${employee.name}    ${employee.surname}",
                                     style = MaterialTheme.typography.headlineMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = TailwindBlue
@@ -310,7 +310,6 @@ fun EmployeeDetailScreen(
                     onClick = {
                         onDelete(employee)
                         showDeleteDialog = false
-                        onBack()
                     },
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = TailwindRed
@@ -329,7 +328,7 @@ fun EmployeeDetailScreen(
 }
 
 @Composable
-fun DetailRow(
+private fun DetailRow(
     label: String,
     value: String,
     icon: String

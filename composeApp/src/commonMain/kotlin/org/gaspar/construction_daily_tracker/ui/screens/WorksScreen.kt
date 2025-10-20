@@ -185,8 +185,8 @@ fun AddWorkDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Site Name") },
-                    placeholder = { Text("Main Street Project") },
+                    label = { Text("Work Name") },
+                    placeholder = { Text("Work Name") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -204,7 +204,7 @@ fun AddWorkDialog(
             TextButton(
                 onClick = {
                     when {
-                        name.isBlank() -> errorMessage = "Site name is required"
+                        name.isBlank() -> errorMessage = "Work name is required"
                         else -> {
                             onConfirm(name.trim())
                             onDismiss()

@@ -3,7 +3,44 @@ package org.gaspar.construction_daily_tracker.network
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import kotlinx.serialization.Serializable
 import org.gaspar.construction_daily_tracker.model.*
+
+@Serializable
+data class CreateEmployeeRequest(
+    val name: String,
+    val surname: String,
+    val roleId: Int,
+    val workId: Int,
+    val dailyValue: String
+)
+
+@Serializable
+data class UpdateEmployeeRequest(
+    val name: String,
+    val surname: String,
+    val roleId: Int,
+    val workId: Int,
+    val dailyValue: String
+)
+
+@Serializable
+data class RoleRequest(
+    val title: String
+)
+
+@Serializable
+data class CreateAdjustmentRequest(
+    val employeeId: Int,
+    val date: String,
+    val adjustmentValue: String,
+    val notes: String? = null
+)
+
+@Serializable
+data class GeneratePayrollRequest(
+    val periodStartDate: String
+)
 
 /**
  * Repository for Role-related API calls.
@@ -12,9 +49,9 @@ class RoleRepository(private val client: HttpClient) {
     suspend fun getAllRoles(): List<Role> = client.get("/roles").body()
     suspend fun getRoleById(id: Int): Role = client.get("/roles/$id").body()
     suspend fun createRole(title: String): Role =
-        client.post("/roles") { setBody(mapOf("title" to title)) }.body()
+        client.post("/roles") { setBody(RoleRequest(title)) }.body()
     suspend fun updateRole(id: Int, title: String): Role =
-        client.put("/roles/$id") { setBody(mapOf("title" to title)) }.body()
+        client.put("/roles/$id") { setBody(RoleRequest(title)) }.body()
     suspend fun deleteRole(id: Int) = client.delete("/roles/$id")
 }
 
@@ -31,12 +68,12 @@ class EmployeeRepository(private val client: HttpClient) {
         workId: Int,
         dailyValue: String
     ): Employee = client.post("/employees") {
-        setBody(mapOf(
-            "name" to name,
-            "surname" to surname,
-            "roleId" to roleId,
-            "workId" to workId,
-            "dailyValue" to dailyValue
+        setBody(CreateEmployeeRequest(
+            name = name,
+            surname = surname,
+            roleId = roleId,
+            workId = workId,
+            dailyValue = dailyValue
         ))
     }.body()
     suspend fun updateEmployee(
@@ -47,12 +84,12 @@ class EmployeeRepository(private val client: HttpClient) {
         workId: Int,
         dailyValue: String
     ): Employee = client.put("/employees/$id") {
-        setBody(mapOf(
-            "name" to name,
-            "surname" to surname,
-            "roleId" to roleId,
-            "workId" to workId,
-            "dailyValue" to dailyValue
+        setBody(UpdateEmployeeRequest(
+            name = name,
+            surname = surname,
+            roleId = roleId,
+            workId = workId,
+            dailyValue = dailyValue
         ))
     }.body()
     suspend fun deleteEmployee(id: Int) = client.delete("/employees/$id")
@@ -70,12 +107,12 @@ class DayAdjustmentRepository(private val client: HttpClient) {
         adjustmentValue: String,
         notes: String?
     ): DayAdjustment = client.post("/day-adjustments") {
-        setBody(buildMap {
-            put("employeeId", employeeId)
-            put("date", date)
-            put("adjustmentValue", adjustmentValue)
-            notes?.let { put("notes", it) }
-        })
+        setBody(CreateAdjustmentRequest(
+            employeeId = employeeId,
+            date = date,
+            adjustmentValue = adjustmentValue,
+            notes = notes
+        ))
     }.body()
     suspend fun deleteAdjustment(id: Int) = client.delete("/day-adjustments/$id")
 }
@@ -88,7 +125,7 @@ class PayrollRepository(private val client: HttpClient) {
     suspend fun getPayrollById(id: Int): MonthlyPayroll = client.get("/monthly-payrolls/$id").body()
     suspend fun generatePayroll(periodStartDate: String): List<MonthlyPayroll> =
         client.post("/monthly-payrolls/generate") {
-            setBody(mapOf("periodStartDate" to periodStartDate))
+            setBody(GeneratePayrollRequest(periodStartDate))
         }.body()
     suspend fun closePayroll(id: Int): MonthlyPayroll =
         client.put("/monthly-payrolls/$id/close").body()

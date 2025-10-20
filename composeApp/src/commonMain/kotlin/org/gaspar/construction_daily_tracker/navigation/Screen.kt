@@ -17,6 +17,9 @@ sealed class Screen(val route: String, val title: String) {
     data class EmployeeDetail(val employeeId: Int? = null) :
         Screen("employee/${employeeId ?: "new"}", "Employee Details")
 
+    data class EmployeeEdit(val employeeId: Int? = null) :
+        Screen("employee/edit/${employeeId ?: "new"}", "Edit Employee")
+
     data class WorkDetail(val workId: Int? = null) :
         Screen("work/${workId ?: "new"}", "Work Details")
 

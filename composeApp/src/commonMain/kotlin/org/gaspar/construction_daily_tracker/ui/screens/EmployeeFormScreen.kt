@@ -21,11 +21,11 @@ import org.gaspar.construction_daily_tracker.model.Work
 private val TailwindBlue = Color(0xFF2563EB)
 
 /**
- * Screen for adding or editing an employee.
+ * Screen for adding or editing an employee (FORM).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmployeeDetailScreen(
+fun EmployeeFormScreen(
     employee: Employee? = null,
     works: List<Work>,
     roles: List<Role>,
@@ -74,7 +74,7 @@ fun EmployeeDetailScreen(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("First Name") },
+                label = { Text("Full Name") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading
@@ -84,7 +84,7 @@ fun EmployeeDetailScreen(
             OutlinedTextField(
                 value = surname,
                 onValueChange = { surname = it },
-                label = { Text("Last Name") },
+                label = { Text("Surname") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading
@@ -99,7 +99,7 @@ fun EmployeeDetailScreen(
                     value = works.find { it.id == selectedWorkId }?.name ?: "Select Work",
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Construction Site") },
+                    label = { Text("Construction Name") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = showWorkDropdown) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -182,7 +182,6 @@ fun EmployeeDetailScreen(
                 onClick = {
                     when {
                         name.isBlank() -> errorMessage = "First name is required"
-                        surname.isBlank() -> errorMessage = "Last name is required"
                         dailyValue.isBlank() -> errorMessage = "Daily rate is required"
                         dailyValue.toDoubleOrNull() == null -> errorMessage = "Invalid daily rate"
                         selectedWorkId == 0 -> errorMessage = "Please select a work"

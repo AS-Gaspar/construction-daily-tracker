@@ -80,9 +80,39 @@ fun AppContent(viewModel: AppViewModel) {
                 works = viewModel.works,
                 isLoading = viewModel.isLoading,
                 onAddWork = { viewModel.showAddWorkDialog = true },
-                onWorkClick = { /* TODO: Edit work */ },
+                onWorkClick = { work ->
+                    // Navigate to work detail showing all employees for this work
+                    viewModel.navigationState.navigateTo(Screen.WorkDetail(work.id))
+                },
                 onBack = { viewModel.navigationState.navigateBack() },
                 onRefresh = { viewModel.refreshAll() }
+            )
+        }
+
+        is Screen.WorkDetail -> {
+            // Work detail screen - shows work info with edit/delete buttons
+            val work = screen.workId?.let { id ->
+                viewModel.works.find { it.id == id }
+            }
+            WorkViewScreen(
+                work = work,
+                employees = viewModel.employees,
+                isLoading = viewModel.isLoading,
+                successMessage = viewModel.successMessage,
+                onBack = { viewModel.navigationState.navigateBack() },
+                onEdit = { updatedWork ->
+                    // Update work with new name
+                    viewModel.updateWork(updatedWork.id, updatedWork.name)
+                },
+                onDelete = { workToDelete ->
+                    // Delete work
+                    viewModel.deleteWork(workToDelete.id)
+                },
+                onEmployeeClick = { employee ->
+                    // Navigate to employee view screen
+                    viewModel.navigationState.navigateTo(Screen.EmployeeDetail(employee.id))
+                },
+                onClearSuccessMessage = { viewModel.clearSuccessMessage() }
             )
         }
 
@@ -106,9 +136,11 @@ fun AppContent(viewModel: AppViewModel) {
                 adjustments = viewModel.dayAdjustments,
                 isLoading = viewModel.isLoading,
                 onAddEmployee = {
-                    viewModel.navigationState.navigateTo(Screen.EmployeeDetail())
+                    // Navigate to form screen for adding new employee
+                    viewModel.navigationState.navigateTo(Screen.EmployeeEdit())
                 },
                 onEmployeeClick = { employee ->
+                    // Navigate to view screen to see employee details
                     viewModel.navigationState.navigateTo(Screen.EmployeeDetail(employee.id))
                 },
                 onBack = { viewModel.navigationState.navigateBack() },
@@ -117,16 +149,47 @@ fun AppContent(viewModel: AppViewModel) {
         }
 
         is Screen.EmployeeDetail -> {
+            // View screen - shows employee details with edit/delete buttons
             val employee = screen.employeeId?.let { id ->
                 viewModel.employees.find { it.id == id }
             }
-            EmployeeDetailScreen(
+            EmployeeViewScreen(
+                employee = employee,
+                works = viewModel.works,
+                roles = viewModel.roles,
+                payrolls = viewModel.payrolls,
+                adjustments = viewModel.dayAdjustments,
+                isLoading = viewModel.isLoading,
+                onBack = { viewModel.navigationState.navigateBack() },
+                onEdit = { emp ->
+                    // Navigate to edit screen
+                    viewModel.navigationState.navigateTo(Screen.EmployeeEdit(emp.id))
+                },
+                onDelete = { emp ->
+                    // Delete employee
+                    viewModel.deleteEmployee(emp.id)
+                }
+            )
+        }
+
+        is Screen.EmployeeEdit -> {
+            // Form screen - for adding or editing employee
+            val employee = screen.employeeId?.let { id ->
+                viewModel.employees.find { it.id == id }
+            }
+            EmployeeFormScreen(
                 employee = employee,
                 works = viewModel.works,
                 roles = viewModel.roles,
                 isLoading = viewModel.isLoading,
                 onSave = { name, surname, roleId, workId, dailyValue ->
-                    viewModel.createEmployee(name, surname, roleId, workId, dailyValue)
+                    if (employee != null) {
+                        // Update existing employee
+                        viewModel.updateEmployee(employee.id, name, surname, roleId, workId, dailyValue)
+                    } else {
+                        // Create new employee
+                        viewModel.createEmployee(name, surname, roleId, workId, dailyValue)
+                    }
                 },
                 onBack = { viewModel.navigationState.navigateBack() }
             )

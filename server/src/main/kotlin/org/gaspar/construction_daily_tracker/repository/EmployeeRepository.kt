@@ -48,14 +48,20 @@ class EmployeeRepository {
         roleId: Int? = null,
         workId: Int? = null,
         dailyValue: BigDecimal? = null
-    ): Boolean = transaction {
-        Employees.update({ Employees.id eq id }) {
+    ): Employee? = transaction {
+        val updated = Employees.update({ Employees.id eq id }) {
             name?.let { v -> it[Employees.name] = v }
             surname?.let { v -> it[Employees.surname] = v }
             roleId?.let { v -> it[Employees.roleId] = v }
             workId?.let { v -> it[Employees.workId] = v }
             dailyValue?.let { v -> it[Employees.dailyValue] = v }
-        } > 0
+        }
+
+        if (updated > 0) {
+            findById(id)
+        } else {
+            null
+        }
     }
 
     fun delete(id: Int): Boolean = transaction {
