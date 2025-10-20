@@ -20,13 +20,9 @@ This is a Kotlin Multiplatform project targeting Android, Server.
 To build and run the development version of the Android app, use the run configuration from the run widget
 in your IDE’s toolbar or build it directly from the terminal:
 
-- on macOS/Linux
+- on Linux
   ```shell
   ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
   ```
 
 ### Build and Run Server
@@ -34,15 +30,11 @@ in your IDE’s toolbar or build it directly from the terminal:
 To build and run the development version of the server, use the run configuration from the run widget
 in your IDE’s toolbar or run it directly from the terminal:
 
-- on macOS/Linux
+- on Linux
   ```shell
   ./gradlew :server:run
   ```
-- on Windows
-  ```shell
-  .\gradlew.bat :server:run
-  ```
-
+  
 ---
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
