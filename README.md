@@ -28,7 +28,7 @@ in your IDE’s toolbar or run it directly from the terminal:
 
 - on Linux
   ```shell
-  ./gradlew :server:run
+  ./start-server.sh
   ```
   
 ---
