@@ -36,6 +36,7 @@ dependencies {
     implementation(libs.jbcrypt)
     implementation(libs.ktor.server.metricsMicrometer)
     implementation(libs.micrometer.registryPrometheus)
+    implementation(libs.dotenv.kotlin)
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(libs.kotlin.testJunit)
     testImplementation(libs.h2)

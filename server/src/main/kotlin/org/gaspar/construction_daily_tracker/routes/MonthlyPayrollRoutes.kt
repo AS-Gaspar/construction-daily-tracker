@@ -22,6 +22,12 @@ fun Route.monthlyPayrollRoutes(
     employeeRepo: EmployeeRepository
 ) {
     route("/monthly-payrolls") {
+        // Get all payrolls
+        get {
+            val payrolls = payrollRepo.findAll()
+            call.respond(payrolls)
+        }
+
         post {
             val request = call.receive<CreateMonthlyPayrollRequest>()
 

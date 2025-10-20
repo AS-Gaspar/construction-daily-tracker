@@ -24,6 +24,12 @@ fun Route.dayAdjustmentRoutes(
     employeeRepo: EmployeeRepository
 ) {
     route("/day-adjustments") {
+        // Get all adjustments
+        get {
+            val adjustments = adjustmentRepo.findAll()
+            call.respond(adjustments)
+        }
+
         post {
             val request = call.receive<CreateDayAdjustmentRequest>()
 

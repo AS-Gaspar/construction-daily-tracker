@@ -14,6 +14,7 @@ junit = "4.13.2"
 kotlin = "2.2.20"
 ktor = "3.3.0"
 logback = "1.5.18"
+dotenv = "6.4.1"
 
 # --- VERSÕES ADICIONADAS ---
 exposed = "0.52.0"
@@ -41,6 +42,7 @@ logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 ktor-serverCore = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-serverNetty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
 ktor-serverTestHost = { module = "io.ktor:ktor-server-test-host-jvm", version.ref = "ktor" }
+dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version.ref = "dotenv" }
 
 # --- BIBLIOTECAS ADICIONADAS ---
 

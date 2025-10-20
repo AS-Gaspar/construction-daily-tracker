@@ -22,13 +22,23 @@ import androidx.compose.ui.unit.dp
 fun SettingsScreen(
     currentServerUrl: String = "",
     currentApiKey: String = "",
+    errorMessage: String? = null,
+    isLoading: Boolean = false,
     onSave: (serverUrl: String, apiKey: String) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onTestConnection: (() -> Unit)? = null
 ) {
     var serverUrl by remember { mutableStateOf(currentServerUrl) }
     var apiKey by remember { mutableStateOf(currentApiKey) }
     var showApiKey by remember { mutableStateOf(false) }
     var saveSuccess by remember { mutableStateOf(false) }
+
+    // Reset success message when error occurs
+    LaunchedEffect(errorMessage) {
+        if (errorMessage != null) {
+            saveSuccess = false
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -73,9 +83,9 @@ fun SettingsScreen(
             // API Key input
             OutlinedTextField(
                 value = apiKey,
-                onValueChange = { apiKey = it },
+                onValueChange = { apiKey = it.trim() }, // Auto-trim whitespace
                 label = { Text("API Key") },
-                placeholder = { Text("Enter your API key") },
+                placeholder = { Text("Paste your API key here") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 visualTransformation = if (showApiKey) {
@@ -87,18 +97,76 @@ fun SettingsScreen(
                     TextButton(onClick = { showApiKey = !showApiKey }) {
                         Text(if (showApiKey) "Hide" else "Show")
                     }
+                },
+                supportingText = {
+                    Text(
+                        text = "64 characters long - paste carefully",
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
             )
 
-            if (saveSuccess) {
-                Text(
-                    text = "✓ Settings saved successfully!",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+            // Error message display
+            errorMessage?.let { error ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "❌ Connection Error",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = error,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
+                }
+            }
+
+            if (saveSuccess && errorMessage == null) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
+                ) {
+                    Text(
+                        text = "✓ Settings saved and connected successfully!",
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
+
+            // Test Connection button
+            onTestConnection?.let { testFn ->
+                OutlinedButton(
+                    onClick = testFn,
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isLoading && serverUrl.isNotBlank() && apiKey.isNotBlank()
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                    Text("Test Connection")
+                }
+            }
 
             // Save button
             Button(
@@ -109,9 +177,17 @@ fun SettingsScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = serverUrl.isNotBlank() && apiKey.isNotBlank()
+                enabled = serverUrl.isNotBlank() && apiKey.isNotBlank() && !isLoading
             ) {
-                Text("Save Settings")
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Text("Save Configuration")
             }
 
             // Info card

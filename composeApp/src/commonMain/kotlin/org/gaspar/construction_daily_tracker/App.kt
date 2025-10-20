@@ -19,10 +19,15 @@ fun App() {
             SettingsScreen(
                 currentServerUrl = viewModel.getCurrentServerUrl(),
                 currentApiKey = viewModel.getCurrentApiKey(),
+                errorMessage = viewModel.errorMessage,
+                isLoading = viewModel.isLoading,
                 onSave = { serverUrl, apiKey ->
                     viewModel.configureApi(serverUrl, apiKey)
                 },
-                onBack = { /* Can't go back from initial setup */ }
+                onBack = { /* Can't go back from initial setup */ },
+                onTestConnection = {
+                    viewModel.testConnection()
+                }
             )
         } else {
             // Main app navigation
@@ -180,10 +185,15 @@ fun AppContent(viewModel: AppViewModel) {
             SettingsScreen(
                 currentServerUrl = viewModel.getCurrentServerUrl(),
                 currentApiKey = viewModel.getCurrentApiKey(),
+                errorMessage = viewModel.errorMessage,
+                isLoading = viewModel.isLoading,
                 onSave = { serverUrl, apiKey ->
                     viewModel.configureApi(serverUrl, apiKey)
                 },
-                onBack = { viewModel.navigationState.navigateBack() }
+                onBack = { viewModel.navigationState.navigateBack() },
+                onTestConnection = {
+                    viewModel.testConnection()
+                }
             )
         }
 

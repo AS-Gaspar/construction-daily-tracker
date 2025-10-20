@@ -39,6 +39,12 @@ class MonthlyPayrollRepository {
         )
     }
 
+    fun findAll(): List<MonthlyPayroll> = transaction {
+        MonthlyPayrolls.selectAll()
+            .orderBy(MonthlyPayrolls.periodStartDate to SortOrder.DESC)
+            .map { toMonthlyPayroll(it) }
+    }
+
     fun findById(id: Int): MonthlyPayroll? = transaction {
         MonthlyPayrolls.selectAll().where { MonthlyPayrolls.id eq id }
             .map { toMonthlyPayroll(it) }

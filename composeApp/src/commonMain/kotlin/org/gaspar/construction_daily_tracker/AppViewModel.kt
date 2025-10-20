@@ -116,6 +116,74 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
     }
 
     /**
+     * Test connection to the API server without saving credentials.
+     */
+    fun testConnection() {
+        val serverUrl = credentialStorage.getServerUrl()
+        val apiKey = credentialStorage.getApiKey()
+
+        println("🔍 TEST CONNECTION START")
+        println("   Server URL: $serverUrl")
+        println("   API Key: ${apiKey?.take(10)}...${apiKey?.takeLast(4)}")
+
+        if (apiKey == null) {
+            errorMessage = "Please enter an API key first"
+            return
+        }
+
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            try {
+                println("   Creating HTTP client...")
+                val testClient = ApiClient.create(serverUrl, apiKey)
+                val testRepo = WorkRepository(testClient)
+
+                println("   Sending request to /works...")
+                // Try to fetch works as a connection test
+                val works = testRepo.getAllWorks()
+
+                println("✅ CONNECTION TEST SUCCESSFUL!")
+                println("   Received ${works.size} works from server")
+                errorMessage = "✅ Connection successful!\n\nReceived ${works.size} works from server.\n\nYou can now use the app."
+            } catch (e: Exception) {
+                println("❌ CONNECTION TEST FAILED!")
+                println("   Error type: ${e::class.simpleName}")
+                println("   Error message: ${e.message}")
+                println("   Full stack trace:")
+                println(e.stackTraceToString())
+
+                // Provide specific error messages based on error type
+                errorMessage = when {
+                    e.message?.contains("Unable to resolve host") == true ->
+                        "❌ Cannot reach server\n\nThe URL cannot be resolved:\n$serverUrl\n\n" +
+                        "Check:\n• Server is running\n• URL is correct\n• You're on the same network (for physical device)"
+
+                    e.message?.contains("timeout") == true ->
+                        "❌ Connection timeout\n\nServer: $serverUrl\n\n" +
+                        "Check:\n• Server is running\n• Firewall isn't blocking\n• Try: http://10.0.2.2:8080 (emulator)\n• Try: http://192.168.3.117:8080 (physical)"
+
+                    e.message?.contains("401") == true || e.message?.contains("Unauthorized") == true ->
+                        "❌ Authentication failed\n\nThe API key is invalid.\n\n" +
+                        "Check:\n• API key is exactly 64 characters\n• No extra spaces\n• Matches server's API_KEY in .env.local"
+
+                    e.message?.contains("Connection refused") == true ->
+                        "❌ Connection refused\n\nServer: $serverUrl\n\n" +
+                        "The server is not running or not accepting connections.\n\n" +
+                        "Start server: ./start-server.sh"
+
+                    else ->
+                        "❌ Connection failed\n\nError: ${e.message}\n\nServer: $serverUrl\n\n" +
+                        "Check Android Studio Logcat for details."
+                }
+            } finally {
+                isLoading = false
+                println("🔍 TEST CONNECTION END\n")
+            }
+        }
+    }
+
+    /**
      * Refresh all data from the server.
      */
     fun refreshAll() {
@@ -123,13 +191,22 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
             isLoading = true
             errorMessage = null
             try {
+                println("🔄 REFRESH ALL DATA START")
                 works = workRepository?.getAllWorks() ?: emptyList()
+                println("   ✓ Loaded ${works.size} works")
                 roles = roleRepository?.getAllRoles() ?: emptyList()
+                println("   ✓ Loaded ${roles.size} roles")
                 employees = employeeRepository?.getAllEmployees() ?: emptyList()
+                println("   ✓ Loaded ${employees.size} employees")
                 dayAdjustments = dayAdjustmentRepository?.getAllAdjustments() ?: emptyList()
+                println("   ✓ Loaded ${dayAdjustments.size} day adjustments")
                 payrolls = payrollRepository?.getAllPayrolls() ?: emptyList()
+                println("   ✓ Loaded ${payrolls.size} payrolls")
+                println("✅ REFRESH ALL DATA SUCCESS\n")
             } catch (e: Exception) {
-                errorMessage = "Failed to load data: ${e.message}"
+                println("❌ REFRESH ALL DATA FAILED: ${e.message}")
+                println(e.stackTraceToString())
+                errorMessage = "Failed to load data: ${e.message}\n\nGo to Settings to check your connection."
             } finally {
                 isLoading = false
             }
@@ -147,6 +224,7 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
                 showAddWorkDialog = false
             } catch (e: Exception) {
                 errorMessage = "Failed to create work: ${e.message}"
+                println("API connection error in createWork: ${e.stackTraceToString()}")
             } finally {
                 isLoading = false
             }
@@ -164,6 +242,7 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
                 showAddRoleDialog = false
             } catch (e: Exception) {
                 errorMessage = "Failed to create role: ${e.message}"
+                println("API connection error in createRole: ${e.stackTraceToString()}")
             } finally {
                 isLoading = false
             }
@@ -187,6 +266,7 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
                 navigationState.navigateBack()
             } catch (e: Exception) {
                 errorMessage = "Failed to create employee: ${e.message}"
+                println("API connection error in createEmployee: ${e.stackTraceToString()}")
             } finally {
                 isLoading = false
             }
@@ -216,6 +296,7 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
                 showAddAdjustmentDialog = false
             } catch (e: Exception) {
                 errorMessage = "Failed to create adjustment: ${e.message}"
+                println("API connection error in createAdjustment: ${e.stackTraceToString()}")
             } finally {
                 isLoading = false
             }
@@ -233,6 +314,7 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
                 showGeneratePayrollDialog = false
             } catch (e: Exception) {
                 errorMessage = "Failed to generate payroll: ${e.message}"
+                println("API connection error in generatePayroll: ${e.stackTraceToString()}")
             } finally {
                 isLoading = false
             }

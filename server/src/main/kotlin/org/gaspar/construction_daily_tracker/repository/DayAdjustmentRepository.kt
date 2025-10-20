@@ -25,6 +25,12 @@ class DayAdjustmentRepository {
         DayAdjustment(id, employeeId, date, adjustmentValue.toString(), notes)
     }
 
+    fun findAll(): List<DayAdjustment> = transaction {
+        DayAdjustments.selectAll()
+            .orderBy(DayAdjustments.date to SortOrder.DESC)
+            .map { toDayAdjustment(it) }
+    }
+
     fun findById(id: Int): DayAdjustment? = transaction {
         DayAdjustments.selectAll().where { DayAdjustments.id eq id }
             .map { toDayAdjustment(it) }
