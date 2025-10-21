@@ -112,6 +112,10 @@ fun AppContent(viewModel: AppViewModel) {
                     // Navigate to employee view screen
                     viewModel.navigationState.navigateTo(Screen.EmployeeDetail(employee.id))
                 },
+                onAddEmployee = {
+                    // Navigate to add new employee form
+                    viewModel.navigationState.navigateTo(Screen.EmployeeEdit())
+                },
                 onClearSuccessMessage = { viewModel.clearSuccessMessage() }
             )
         }
@@ -148,6 +152,22 @@ fun AppContent(viewModel: AppViewModel) {
             )
         }
 
+        Screen.UnassignedEmployees -> {
+            UnassignedEmployeesScreen(
+                employees = viewModel.employees,
+                roles = viewModel.roles,
+                payrolls = viewModel.payrolls,
+                adjustments = viewModel.dayAdjustments,
+                isLoading = viewModel.isLoading,
+                onBack = { viewModel.navigationState.navigateBack() },
+                onEmployeeClick = { employee ->
+                    // Navigate to employee view screen to assign work
+                    viewModel.navigationState.navigateTo(Screen.EmployeeDetail(employee.id))
+                },
+                onRefresh = { viewModel.refreshAll() }
+            )
+        }
+
         is Screen.EmployeeDetail -> {
             // View screen - shows employee details with edit/delete buttons
             val employee = screen.employeeId?.let { id ->
@@ -160,6 +180,7 @@ fun AppContent(viewModel: AppViewModel) {
                 payrolls = viewModel.payrolls,
                 adjustments = viewModel.dayAdjustments,
                 isLoading = viewModel.isLoading,
+                successMessage = viewModel.successMessage,
                 onBack = { viewModel.navigationState.navigateBack() },
                 onEdit = { emp ->
                     // Navigate to edit screen
@@ -168,7 +189,12 @@ fun AppContent(viewModel: AppViewModel) {
                 onDelete = { emp ->
                     // Delete employee
                     viewModel.deleteEmployee(emp.id)
-                }
+                },
+                onAssignToWork = { employeeId, workId ->
+                    // Assign employee to work
+                    viewModel.assignEmployeeToWork(employeeId, workId)
+                },
+                onClearSuccessMessage = { viewModel.clearSuccessMessage() }
             )
         }
 

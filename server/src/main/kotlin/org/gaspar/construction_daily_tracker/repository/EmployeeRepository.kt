@@ -9,7 +9,7 @@ import java.math.BigDecimal
 
 class EmployeeRepository {
 
-    fun create(name: String, surname: String, roleId: Int, workId: Int, dailyValue: BigDecimal): Employee = transaction {
+    fun create(name: String, surname: String, roleId: Int, workId: Int?, dailyValue: BigDecimal): Employee = transaction {
         val id = Employees.insert {
             it[Employees.name] = name
             it[Employees.surname] = surname

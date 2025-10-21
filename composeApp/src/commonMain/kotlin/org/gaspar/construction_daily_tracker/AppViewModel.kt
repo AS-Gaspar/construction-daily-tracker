@@ -260,11 +260,33 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
             isLoading = true
             errorMessage = null
             try {
+                // Delete the work (database will automatically set employees' workId to null via ON DELETE SET NULL)
                 workRepository?.deleteWork(id)
+
+                // Refresh data
                 works = workRepository?.getAllWorks() ?: emptyList()
+                employees = employeeRepository?.getAllEmployees() ?: emptyList()
+
                 navigationState.navigateBack()
             } catch (e: Exception) {
                 errorMessage = "Failed to delete work: ${e.message}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun assignEmployeeToWork(employeeId: Int, workId: Int) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            successMessage = null
+            try {
+                employeeRepository?.assignToWork(employeeId, workId)
+                employees = employeeRepository?.getAllEmployees() ?: emptyList()
+                successMessage = "Employee assigned successfully!"
+            } catch (e: Exception) {
+                errorMessage = "Failed to assign employee: ${e.message}"
             } finally {
                 isLoading = false
             }
@@ -294,7 +316,7 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
         name: String,
         surname: String,
         roleId: Int,
-        workId: Int,
+        workId: Int?,
         dailyValue: String
     ) {
         viewModelScope.launch {
@@ -318,7 +340,7 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
         name: String,
         surname: String,
         roleId: Int,
-        workId: Int,
+        workId: Int?,
         dailyValue: String
     ) {
         viewModelScope.launch {

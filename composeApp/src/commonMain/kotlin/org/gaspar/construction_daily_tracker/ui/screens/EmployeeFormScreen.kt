@@ -30,12 +30,12 @@ fun EmployeeFormScreen(
     works: List<Work>,
     roles: List<Role>,
     isLoading: Boolean,
-    onSave: (name: String, surname: String, roleId: Int, workId: Int, dailyValue: String) -> Unit,
+    onSave: (name: String, surname: String, roleId: Int, workId: Int?, dailyValue: String) -> Unit,
     onBack: () -> Unit
 ) {
     var name by remember { mutableStateOf(employee?.name ?: "") }
     var surname by remember { mutableStateOf(employee?.surname ?: "") }
-    var selectedWorkId by remember { mutableStateOf(employee?.workId ?: works.firstOrNull()?.id ?: 0) }
+    var selectedWorkId by remember { mutableStateOf(employee?.workId) }
     var selectedRoleId by remember { mutableStateOf(employee?.roleId ?: roles.firstOrNull()?.id ?: 0) }
     var dailyValue by remember { mutableStateOf(employee?.dailyValue ?: "") }
     var showWorkDropdown by remember { mutableStateOf(false) }
@@ -96,7 +96,7 @@ fun EmployeeFormScreen(
                 onExpandedChange = { showWorkDropdown = !showWorkDropdown && !isLoading }
             ) {
                 OutlinedTextField(
-                    value = works.find { it.id == selectedWorkId }?.name ?: "Select Work",
+                    value = selectedWorkId?.let { id -> works.find { it.id == id }?.name } ?: "No Work",
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Construction Name") },
@@ -110,6 +110,16 @@ fun EmployeeFormScreen(
                     expanded = showWorkDropdown,
                     onDismissRequest = { showWorkDropdown = false }
                 ) {
+                    // "No Work" option
+                    DropdownMenuItem(
+                        text = { Text("No Work") },
+                        onClick = {
+                            selectedWorkId = null
+                            showWorkDropdown = false
+                        }
+                    )
+
+                    // All available works
                     works.forEach { work ->
                         DropdownMenuItem(
                             text = { Text(work.name) },
@@ -184,7 +194,6 @@ fun EmployeeFormScreen(
                         name.isBlank() -> errorMessage = "First name is required"
                         dailyValue.isBlank() -> errorMessage = "Daily rate is required"
                         dailyValue.toDoubleOrNull() == null -> errorMessage = "Invalid daily rate"
-                        selectedWorkId == 0 -> errorMessage = "Please select a work"
                         selectedRoleId == 0 -> errorMessage = "Please select a role"
                         else -> {
                             errorMessage = null

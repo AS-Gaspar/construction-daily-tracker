@@ -13,7 +13,7 @@ data class CreateEmployeeRequest(
     val name: String,
     val surname: String,
     val roleId: Int,
-    val workId: Int,
+    val workId: Int?,
     val dailyValue: String
 )
 

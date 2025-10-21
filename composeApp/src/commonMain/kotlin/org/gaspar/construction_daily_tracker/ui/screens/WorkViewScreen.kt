@@ -1,10 +1,13 @@
 package org.gaspar.construction_daily_tracker.ui.screens
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
@@ -39,6 +42,7 @@ fun WorkViewScreen(
     onEdit: (Work) -> Unit,
     onDelete: (Work) -> Unit,
     onEmployeeClick: (Employee) -> Unit,
+    onAddEmployee: () -> Unit,
     onClearSuccessMessage: () -> Unit
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -207,22 +211,22 @@ fun WorkViewScreen(
                         }
 
                         // Employees assigned to this work
-                        if (workEmployees.isNotEmpty()) {
-                            Card(
-                                modifier = Modifier.fillMaxWidth()
+                        Card(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(20.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                Column(
-                                    modifier = Modifier.padding(20.dp),
-                                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                                ) {
-                                    Text(
-                                        text = "Assigned Employees",
-                                        style = MaterialTheme.typography.titleLarge,
-                                        fontWeight = FontWeight.Bold
-                                    )
+                                Text(
+                                    text = "Assigned Employees",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
 
-                                    HorizontalDivider()
+                                HorizontalDivider()
 
+                                if (workEmployees.isNotEmpty()) {
                                     workEmployees.forEach { employee ->
                                         Surface(
                                             modifier = Modifier.fillMaxWidth(),
@@ -247,6 +251,40 @@ fun WorkViewScreen(
                                                 )
                                             }
                                         }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
+
+                                // Add new employee button
+                                OutlinedCard(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable(onClick = onAddEmployee),
+                                    border = BorderStroke(2.dp, TailwindBlue),
+                                    colors = CardDefaults.outlinedCardColors(
+                                        containerColor = Color.Transparent
+                                    )
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Add,
+                                            contentDescription = "Add",
+                                            tint = TailwindBlue,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = "Add New Employee",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = TailwindBlue
+                                        )
                                     }
                                 }
                             }

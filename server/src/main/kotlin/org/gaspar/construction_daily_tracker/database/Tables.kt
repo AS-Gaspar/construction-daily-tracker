@@ -21,7 +21,7 @@ object Employees : Table("employees") {
     val name = varchar("name", 255)
     val surname = varchar("surname", 255)
     val roleId = integer("role_id").references(Roles.id)
-    val workId = integer("work_id").references(Works.id)
+    val workId = integer("work_id").references(Works.id).nullable()
     val dailyValue = decimal("daily_value", 10, 2)
 
     override val primaryKey = PrimaryKey(id)

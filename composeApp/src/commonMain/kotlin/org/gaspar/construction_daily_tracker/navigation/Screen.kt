@@ -8,6 +8,7 @@ sealed class Screen(val route: String, val title: String) {
     data object Works : Screen("works", "Works")
     data object Roles : Screen("roles", "Roles")
     data object Employees : Screen("employees", "Employees")
+    data object UnassignedEmployees : Screen("unassigned-employees", "Unassigned Employees")
     data object DailyAdjustments : Screen("adjustments", "Daily Work")
     data object Payroll : Screen("payroll", "Monthly Payroll")
     data object Settings : Screen("settings", "API Settings")

@@ -40,11 +40,27 @@ fun EmployeeViewScreen(
     payrolls: List<MonthlyPayroll> = emptyList(),
     adjustments: List<DayAdjustment> = emptyList(),
     isLoading: Boolean,
+    successMessage: String? = null,
     onBack: () -> Unit,
     onEdit: (Employee) -> Unit,
-    onDelete: (Employee) -> Unit
+    onDelete: (Employee) -> Unit,
+    onAssignToWork: ((Int, Int) -> Unit)? = null,
+    onClearSuccessMessage: (() -> Unit)? = null
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showAssignWorkDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Show success message
+    LaunchedEffect(successMessage) {
+        successMessage?.let { message ->
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+            onClearSuccessMessage?.invoke()
+        }
+    }
 
     // Calculate current total days
     val currentTotalDays = remember(employee, payrolls, adjustments) {
@@ -71,6 +87,7 @@ fun EmployeeViewScreen(
     }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("Employee Details") },
@@ -95,6 +112,18 @@ fun EmployeeViewScreen(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    // Delete button (red)
+                    FloatingActionButton(
+                        onClick = { showDeleteDialog = true },
+                        containerColor = TailwindRed,
+                        contentColor = Color.White
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Employee"
+                        )
+                    }
+
                     // Edit button (amber/yellow)
                     FloatingActionButton(
                         onClick = { onEdit(employee) },
@@ -107,16 +136,18 @@ fun EmployeeViewScreen(
                         )
                     }
 
-                    // Delete button (red)
-                    FloatingActionButton(
-                        onClick = { showDeleteDialog = true },
-                        containerColor = TailwindRed,
-                        contentColor = Color.White
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Employee"
-                        )
+                    // Assign to Work button (green) - only show if employee has no work
+                    if (employee.workId == null && onAssignToWork != null) {
+                        FloatingActionButton(
+                            onClick = { showAssignWorkDialog = true },
+                            containerColor = Color(0xFF16A34A), // Tailwind green-600
+                            contentColor = Color.White
+                        ) {
+                            Text(
+                                text = "🏗️",
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
                     }
                 }
             }
@@ -171,7 +202,7 @@ fun EmployeeViewScreen(
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text(
-                                    text = "${employee.name}    ${employee.surname}",
+                                    text = "${employee.name}" + if (employee.surname.isNotEmpty()) " (${employee.surname})" else "",
                                     style = MaterialTheme.typography.headlineMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = TailwindBlue
@@ -320,6 +351,76 @@ fun EmployeeViewScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    // Assign to Work Dialog
+    if (showAssignWorkDialog && employee != null && onAssignToWork != null) {
+        var selectedWorkId by remember { mutableStateOf(0) }
+
+        AlertDialog(
+            onDismissRequest = { showAssignWorkDialog = false },
+            title = { Text("Assign to Work") },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text("Select a work site to assign ${employee.name} ${employee.surname} to:")
+
+                    // Dropdown for selecting work
+                    var expanded by remember { mutableStateOf(false) }
+                    val selectedWork = works.find { it.id == selectedWorkId }
+
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = it }
+                    ) {
+                        OutlinedTextField(
+                            value = selectedWork?.name ?: "Select work...",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Work Site") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                            modifier = Modifier
+                                .menuAnchor()
+                                .fillMaxWidth()
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            works.forEach { work ->
+                                DropdownMenuItem(
+                                    text = { Text(work.name) },
+                                    onClick = {
+                                        selectedWorkId = work.id
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        if (selectedWorkId != 0) {
+                            onAssignToWork(employee.id, selectedWorkId)
+                            showAssignWorkDialog = false
+                        }
+                    },
+                    enabled = selectedWorkId != 0
+                ) {
+                    Text("Assign")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAssignWorkDialog = false }) {
                     Text("Cancel")
                 }
             }

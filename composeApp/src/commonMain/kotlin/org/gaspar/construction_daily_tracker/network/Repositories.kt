@@ -11,7 +11,7 @@ data class CreateEmployeeRequest(
     val name: String,
     val surname: String,
     val roleId: Int,
-    val workId: Int,
+    val workId: Int?,
     val dailyValue: String
 )
 
@@ -20,7 +20,7 @@ data class UpdateEmployeeRequest(
     val name: String,
     val surname: String,
     val roleId: Int,
-    val workId: Int,
+    val workId: Int?,
     val dailyValue: String
 )
 
@@ -65,7 +65,7 @@ class EmployeeRepository(private val client: HttpClient) {
         name: String,
         surname: String,
         roleId: Int,
-        workId: Int,
+        workId: Int?,
         dailyValue: String
     ): Employee = client.post("/employees") {
         setBody(CreateEmployeeRequest(
@@ -81,7 +81,7 @@ class EmployeeRepository(private val client: HttpClient) {
         name: String,
         surname: String,
         roleId: Int,
-        workId: Int,
+        workId: Int?,
         dailyValue: String
     ): Employee = client.put("/employees/$id") {
         setBody(UpdateEmployeeRequest(
@@ -93,6 +93,18 @@ class EmployeeRepository(private val client: HttpClient) {
         ))
     }.body()
     suspend fun deleteEmployee(id: Int) = client.delete("/employees/$id")
+
+    suspend fun assignToWork(id: Int, workId: Int): Employee {
+        val employee = getEmployeeById(id)
+        return updateEmployee(
+            id = id,
+            name = employee.name,
+            surname = employee.surname,
+            roleId = employee.roleId,
+            workId = workId,
+            dailyValue = employee.dailyValue
+        )
+    }
 }
 
 /**

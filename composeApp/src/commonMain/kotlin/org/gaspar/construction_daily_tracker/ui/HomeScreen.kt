@@ -34,6 +34,7 @@ fun HomeScreen(
     val menuItems = listOf(
         MenuItem(Screen.Works, "🏗️", "Manage construction sites"),
         MenuItem(Screen.Employees, "👷", "Manage employees and their roles"),
+        MenuItem(Screen.UnassignedEmployees, "⚠️", "Employees without work assignment"),
         MenuItem(Screen.Payroll, "💰", "View monthly payrolls")
     )
 
