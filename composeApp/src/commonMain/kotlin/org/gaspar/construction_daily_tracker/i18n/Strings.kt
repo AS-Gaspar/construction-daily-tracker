@@ -130,6 +130,8 @@ interface Strings {
     val noAdjustments: String
     val noteDialogTitle: String
     val noNoteAvailable: String
+    val deleteAdjustment: String
+    val deleteAdjustmentConfirm: String
 
     // Adjustment values
     val fullDayWork: String
@@ -342,6 +344,8 @@ class EnglishStrings : Strings {
     override val noAdjustments = "No adjustments found"
     override val noteDialogTitle = "Adjustment Note"
     override val noNoteAvailable = "No note available"
+    override val deleteAdjustment = "Delete Adjustment"
+    override val deleteAdjustmentConfirm = "Are you sure you want to delete this adjustment?"
 
     override val fullDayWork = "+1.0 days (e.g., Saturday work)"
     override val halfDayWork = "+0.5 days (e.g., half-day work)"
@@ -547,6 +551,8 @@ class PortugueseStrings : Strings {
     override val noAdjustments = "Nenhum ajuste encontrado"
     override val noteDialogTitle = "Nota do Ajuste"
     override val noNoteAvailable = "Nenhuma nota disponível"
+    override val deleteAdjustment = "Excluir Ajuste"
+    override val deleteAdjustmentConfirm = "Tem certeza que deseja excluir este ajuste?"
 
     override val fullDayWork = "+1.0 dias (ex: trabalho no sábado)"
     override val halfDayWork = "+0.5 dias (ex: meio período de trabalho)"

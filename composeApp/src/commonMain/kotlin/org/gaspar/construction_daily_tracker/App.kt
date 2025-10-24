@@ -214,6 +214,10 @@ fun AppContent(viewModel: AppViewModel) {
                     // Assign employee to work
                     viewModel.assignEmployeeToWork(employeeId, workId)
                 },
+                onDeleteAdjustment = { adjustmentId ->
+                    // Delete adjustment
+                    viewModel.deleteAdjustment(adjustmentId)
+                },
                 onClearSuccessMessage = { viewModel.clearSuccessMessage() }
             )
         }

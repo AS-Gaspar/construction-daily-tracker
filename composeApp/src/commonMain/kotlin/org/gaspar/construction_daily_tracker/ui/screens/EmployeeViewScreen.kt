@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -47,10 +48,12 @@ fun EmployeeViewScreen(
     onDelete: (Employee) -> Unit,
     onAddAdjustment: ((Int) -> Unit)? = null,
     onAssignToWork: ((Int, Int) -> Unit)? = null,
+    onDeleteAdjustment: ((Int) -> Unit)? = null,
     onClearSuccessMessage: (() -> Unit)? = null
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showAssignWorkDialog by remember { mutableStateOf(false) }
+    var showActionsMenu by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
 
     // Show success message
@@ -107,66 +110,6 @@ fun EmployeeViewScreen(
                     navigationIconContentColor = Color.White
                 )
             )
-        },
-        floatingActionButton = {
-            if (employee != null) {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-
-                    // Add Adjustment button (green)
-                    if (onAddAdjustment != null) {
-                        FloatingActionButton(
-                            onClick = { onAddAdjustment(employee.id) },
-                            containerColor = Color(0xFF22C55E), // Tailwind green-600
-                            contentColor = Color.White
-                        ) {
-                            Text(
-                                text = "✚",
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
-                    }
-                    // Edit button (amber/yellow)
-                    FloatingActionButton(
-                        onClick = { onEdit(employee) },
-                        containerColor = TailwindAmber,
-                        contentColor = Color.White
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit Employee"
-                        )
-                    }
-
-                    // Delete button (red)
-                    FloatingActionButton(
-                        onClick = { showDeleteDialog = true },
-                        containerColor = TailwindRed,
-                        contentColor = Color.White
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Employee"
-                        )
-                    }
-
-                    // Assign to Work button (green) - only show if employee has no work
-                    if (employee.workId == null && onAssignToWork != null) {
-                        FloatingActionButton(
-                            onClick = { showAssignWorkDialog = true },
-                            containerColor = Color(0xFF16A34A), // Tailwind green-600
-                            contentColor = Color.White
-                        ) {
-                            Text(
-                                text = "🏗️",
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
-                    }
-                }
-            }
         }
     ) { padding ->
         Box(
@@ -206,23 +149,43 @@ fun EmployeeViewScreen(
                                 containerColor = TailwindBlue.copy(alpha = 0.1f)
                             )
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(24.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(
-                                    text = "👷",
-                                    style = MaterialTheme.typography.displayLarge
-                                )
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text(
-                                    text = "${employee.name}" + if (employee.surname.isNotEmpty()) " (${employee.surname})" else "",
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = TailwindBlue
-                                )
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(24.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "👷",
+                                        style = MaterialTheme.typography.displayLarge
+                                    )
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Text(
+                                        text = "${employee.name}" + if (employee.surname.isNotEmpty()) " (${employee.surname})" else "",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = TailwindBlue
+                                    )
+                                }
+
+                                // Burger Menu Icon
+                                IconButton(
+                                    onClick = { showActionsMenu = true },
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(8.dp)
+                                        .size(48.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.MoreVert,
+                                        contentDescription = "Actions",
+                                        tint = TailwindBlue,
+                                        modifier = Modifier.size(32.dp)
+                                    )
+                                }
                             }
                         }
 
@@ -342,15 +305,164 @@ fun EmployeeViewScreen(
                         AdjustmentsHistoryTable(
                             strings = strings,
                             employeeId = employee.id,
-                            adjustments = adjustments
+                            adjustments = adjustments,
+                            onDeleteAdjustment = onDeleteAdjustment
                         )
-
-                        // Spacer for FAB
-                        Spacer(modifier = Modifier.height(80.dp))
                     }
                 }
             }
         }
+    }
+
+    // Actions Menu Dialog
+    if (showActionsMenu && employee != null) {
+        AlertDialog(
+            onDismissRequest = { showActionsMenu = false },
+            title = {
+                Text(
+                    text = strings.employeeDetails,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    // Add Adjustment Button
+                    if (onAddAdjustment != null) {
+                        Button(
+                            onClick = {
+                                showActionsMenu = false
+                                onAddAdjustment(employee.id)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF16A34A) // Tailwind green-600
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(text = "✚", style = MaterialTheme.typography.titleLarge)
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Text(
+                                    text = strings.addAdjustment,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
+                    }
+
+                    // Edit Button
+                    Button(
+                        onClick = {
+                            showActionsMenu = false
+                            onEdit(employee)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = TailwindAmber
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = strings.edit,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = strings.editEmployee,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
+
+                    // Delete Button
+                    Button(
+                        onClick = {
+                            showActionsMenu = false
+                            showDeleteDialog = true
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = TailwindRed
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = strings.delete,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = strings.deleteEmployee,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
+
+                    // Assign to Work Button - only show if employee has no work
+                    if (employee.workId == null && onAssignToWork != null) {
+                        Button(
+                            onClick = {
+                                showActionsMenu = false
+                                showAssignWorkDialog = true
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = TailwindBlue
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(text = "🏗️", style = MaterialTheme.typography.titleLarge)
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Text(
+                                    text = strings.assignToWork,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showActionsMenu = false }) {
+                    Text(strings.cancel)
+                }
+            }
+        )
     }
 
     // Delete Confirmation Dialog
@@ -485,9 +597,11 @@ private fun DetailRow(
 private fun AdjustmentsHistoryTable(
     strings: org.gaspar.construction_daily_tracker.i18n.Strings,
     employeeId: Int,
-    adjustments: List<DayAdjustment>
+    adjustments: List<DayAdjustment>,
+    onDeleteAdjustment: ((Int) -> Unit)?
 ) {
     var selectedNote by remember { mutableStateOf<String?>(null) }
+    var adjustmentToDelete by remember { mutableStateOf<DayAdjustment?>(null) }
 
     // Filter adjustments for this employee and sort by date (most recent first)
     val employeeAdjustments = remember(adjustments, employeeId) {
@@ -529,13 +643,13 @@ private fun AdjustmentsHistoryTable(
                         text = strings.date,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1.2f)
                     )
                     Text(
                         text = strings.value,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(0.8f)
                     )
                     Text(
                         text = strings.note,
@@ -543,6 +657,9 @@ private fun AdjustmentsHistoryTable(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f)
                     )
+                    if (onDeleteAdjustment != null) {
+                        Spacer(modifier = Modifier.width(48.dp))
+                    }
                 }
 
                 HorizontalDivider()
@@ -560,7 +677,7 @@ private fun AdjustmentsHistoryTable(
                         Text(
                             text = adjustment.date,
                             style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1.2f)
                         )
 
                         // Value
@@ -572,7 +689,7 @@ private fun AdjustmentsHistoryTable(
                                 TailwindRed
                             else
                                 Color(0xFF16A34A), // Tailwind green
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(0.8f)
                         )
 
                         // Note Button
@@ -584,12 +701,26 @@ private fun AdjustmentsHistoryTable(
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = TailwindBlue
                             ),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Text(
                                 text = strings.viewNote,
                                 style = MaterialTheme.typography.bodySmall
                             )
+                        }
+
+                        // Delete Button
+                        if (onDeleteAdjustment != null) {
+                            IconButton(
+                                onClick = { adjustmentToDelete = adjustment },
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = strings.deleteAdjustment,
+                                    tint = TailwindRed
+                                )
+                            }
                         }
                     }
 
@@ -615,6 +746,38 @@ private fun AdjustmentsHistoryTable(
             confirmButton = {
                 TextButton(onClick = { selectedNote = null }) {
                     Text(strings.ok)
+                }
+            }
+        )
+    }
+
+    // Delete Confirmation Dialog
+    if (adjustmentToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { adjustmentToDelete = null },
+            title = { Text(strings.deleteAdjustment) },
+            text = {
+                Text(
+                    text = strings.deleteAdjustmentConfirm,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDeleteAdjustment?.invoke(adjustmentToDelete!!.id)
+                        adjustmentToDelete = null
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = TailwindRed
+                    )
+                ) {
+                    Text(strings.delete)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { adjustmentToDelete = null }) {
+                    Text(strings.cancel)
                 }
             }
         )

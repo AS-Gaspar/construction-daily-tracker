@@ -459,6 +459,26 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
         }
     }
 
+    fun deleteAdjustment(adjustmentId: Int) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            successMessage = null
+            try {
+                dayAdjustmentRepository?.deleteAdjustment(adjustmentId)
+                dayAdjustments = dayAdjustmentRepository?.getAllAdjustments() ?: emptyList()
+                // Also refresh payrolls as they auto-update
+                payrolls = payrollRepository?.getAllPayrolls() ?: emptyList()
+                successMessage = "Adjustment deleted successfully!"
+            } catch (e: Exception) {
+                errorMessage = "Failed to delete adjustment: ${e.message}"
+                println("API connection error in deleteAdjustment: ${e.stackTraceToString()}")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
     // Payroll operations
     fun generatePayroll(periodStartDate: String) {
         viewModelScope.launch {
