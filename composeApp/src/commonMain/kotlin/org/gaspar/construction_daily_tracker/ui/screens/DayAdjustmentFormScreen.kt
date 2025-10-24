@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.gaspar.construction_daily_tracker.i18n.Strings
 import org.gaspar.construction_daily_tracker.model.Employee
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,6 +26,7 @@ private val TailwindBlue = Color(0xFF2563EB)
 @Composable
 fun DayAdjustmentFormScreen(
     employee: Employee?,
+    strings: Strings,
     onBack: () -> Unit,
     onSave: (date: String, adjustmentValue: String, notes: String) -> Unit,
     isLoading: Boolean = false
@@ -43,12 +45,12 @@ fun DayAdjustmentFormScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add Adjustment Value") },
+                title = { Text(strings.addAdjustmentValue) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -82,7 +84,7 @@ fun DayAdjustmentFormScreen(
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = "Employee",
+                            text = strings.employeeLabel,
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -100,8 +102,8 @@ fun DayAdjustmentFormScreen(
             OutlinedTextField(
                 value = selectedDate?.let { dateFormatter.format(Date(it)) } ?: "",
                 onValueChange = {},
-                label = { Text("Adjustment Date *") },
-                placeholder = { Text("Select date") },
+                label = { Text("${strings.adjustmentDate} *") },
+                placeholder = { Text(strings.selectDate) },
                 readOnly = true,
                 modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
@@ -123,8 +125,8 @@ fun DayAdjustmentFormScreen(
                     } ?: "",
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Adjustment Value *") },
-                    placeholder = { Text("Select value") },
+                    label = { Text("${strings.adjustmentValue} *") },
+                    placeholder = { Text(strings.selectValue) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = showAdjustmentDropdown) },
                     colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
                     modifier = Modifier
@@ -138,14 +140,12 @@ fun DayAdjustmentFormScreen(
                     adjustmentOptions.forEach { value ->
                         DropdownMenuItem(
                             text = {
-                                val numValue = value.toDoubleOrNull() ?: 0.0
-                                val displayText = if (numValue >= 0) "+$value days" else "$value days"
                                 val description = when (value) {
-                                    "1.0" -> "$displayText (e.g., Saturday work)"
-                                    "0.5" -> "$displayText (e.g., half-day work)"
-                                    "-0.5" -> "$displayText (e.g., half-day absence)"
-                                    "-1.0" -> "$displayText (e.g., full-day absence)"
-                                    else -> displayText
+                                    "1.0" -> strings.fullDayWork
+                                    "0.5" -> strings.halfDayWork
+                                    "-0.5" -> strings.halfDayAbsence
+                                    "-1.0" -> strings.fullDayAbsence
+                                    else -> value
                                 }
                                 Text(description)
                             },
@@ -162,8 +162,8 @@ fun DayAdjustmentFormScreen(
             OutlinedTextField(
                 value = notes,
                 onValueChange = { notes = it },
-                label = { Text("Notes (optional)") },
-                placeholder = { Text("e.g., Worked on Saturday, Half-day sick leave") },
+                label = { Text(strings.notesOptional) },
+                placeholder = { Text(strings.notesPlaceholder) },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3,
                 maxLines = 5
@@ -192,8 +192,8 @@ fun DayAdjustmentFormScreen(
             Button(
                 onClick = {
                     when {
-                        selectedDate == null -> errorMessage = "Please select a date"
-                        selectedAdjustmentValue == null -> errorMessage = "Please select an adjustment value"
+                        selectedDate == null -> errorMessage = strings.pleaseSelectDate
+                        selectedAdjustmentValue == null -> errorMessage = strings.pleaseSelectValue
                         else -> {
                             val formattedDate = dateFormatter.format(Date(selectedDate!!))
                             onSave(formattedDate, selectedAdjustmentValue!!, notes.trim())
@@ -215,7 +215,7 @@ fun DayAdjustmentFormScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(if (isLoading) "Saving..." else "Save Adjustment")
+                Text(if (isLoading) strings.saving else strings.saveAdjustment)
             }
         }
 
@@ -235,12 +235,12 @@ fun DayAdjustmentFormScreen(
                             errorMessage = null
                         }
                     ) {
-                        Text("OK")
+                        Text(strings.ok)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showDatePicker = false }) {
-                        Text("Cancel")
+                        Text(strings.cancel)
                     }
                 }
             ) {

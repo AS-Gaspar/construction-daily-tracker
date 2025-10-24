@@ -14,9 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.gaspar.construction_daily_tracker.i18n.Strings
 import org.gaspar.construction_daily_tracker.navigation.Screen
 
 data class MenuItem(
+    val title: String,
     val screen: Screen,
     val icon: String,
     val description: String
@@ -28,20 +30,21 @@ data class MenuItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    strings: Strings,
     onNavigate: (Screen) -> Unit
 ) {
     // Only show main feature buttons: Works, Employees, Monthly Payroll
     val menuItems = listOf(
-        MenuItem(Screen.Works, "🏗️", "Manage construction sites"),
-        MenuItem(Screen.Employees, "👷", "Manage employees and their roles"),
-        MenuItem(Screen.UnassignedEmployees, "⚠️", "Employees without work assignment"),
-        MenuItem(Screen.Payroll, "💰", "View monthly payrolls")
+        MenuItem(strings.worksTitle, Screen.Works, "🏗️", strings.worksDescription),
+        MenuItem(strings.employeesTitle, Screen.Employees, "👷", strings.employeesDescription),
+        MenuItem(strings.unassignedEmployees, Screen.UnassignedEmployees, "⚠️", strings.unassignedEmployeesDescription),
+        MenuItem(strings.payrollTitle, Screen.Payroll, "💰", strings.payrollDescription)
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Construction Daily Tracker") },
+                title = { Text(strings.appName) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     // Tailwind blue-600: #2563eb
                     containerColor = Color(0xFF2563EB),
@@ -58,7 +61,7 @@ fun HomeScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Settings,
-                    contentDescription = "Configuration"
+                    contentDescription = strings.configurationTitle
                 )
             }
         }
@@ -74,7 +77,7 @@ fun HomeScreen(
         ) {
             items(menuItems) { item ->
                 MenuCard(
-                    title = item.screen.title,
+                    title = item.title,
                     icon = item.icon,
                     description = item.description,
                     onClick = { onNavigate(item.screen) }

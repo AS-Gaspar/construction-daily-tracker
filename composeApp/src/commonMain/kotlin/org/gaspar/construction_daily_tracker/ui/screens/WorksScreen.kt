@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.gaspar.construction_daily_tracker.i18n.Strings
 import org.gaspar.construction_daily_tracker.model.Work
 
 // Tailwind blue-600
@@ -25,6 +26,7 @@ private val TailwindBlue = Color(0xFF2563EB)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorksScreen(
+    strings: Strings,
     works: List<Work>,
     isLoading: Boolean,
     onAddWork: () -> Unit,
@@ -35,12 +37,12 @@ fun WorksScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Works") },
+                title = { Text(strings.worksTitle) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -85,7 +87,10 @@ fun WorksScreen(
 
                         // Add new work button at the bottom
                         item {
-                            AddNewWorkButton(onClick = onAddWork)
+                            AddNewWorkButton(
+                                strings = strings,
+                                onClick = onAddWork
+                            )
                         }
                     }
                 }
@@ -129,6 +134,7 @@ fun WorkCard(
 
 @Composable
 fun AddNewWorkButton(
+    strings: Strings,
     onClick: () -> Unit
 ) {
     OutlinedCard(
@@ -149,13 +155,13 @@ fun AddNewWorkButton(
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Add",
+                contentDescription = strings.add,
                 tint = TailwindBlue,
                 modifier = Modifier.size(28.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = "Add New Work",
+                text = strings.addNewWork,
                 style = MaterialTheme.typography.titleLarge,
                 color = TailwindBlue
             )
@@ -168,6 +174,7 @@ fun AddNewWorkButton(
  */
 @Composable
 fun AddWorkDialog(
+    strings: Strings,
     work: Work? = null,
     onDismiss: () -> Unit,
     onConfirm: (name: String) -> Unit
@@ -177,7 +184,7 @@ fun AddWorkDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (work == null) "Add Construction Site" else "Edit Site") },
+        title = { Text(if (work == null) strings.addConstructionSite else strings.editSite) },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -185,8 +192,8 @@ fun AddWorkDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Work Name") },
-                    placeholder = { Text("Work Name") },
+                    label = { Text(strings.workName) },
+                    placeholder = { Text(strings.workName) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -204,7 +211,7 @@ fun AddWorkDialog(
             TextButton(
                 onClick = {
                     when {
-                        name.isBlank() -> errorMessage = "Work name is required"
+                        name.isBlank() -> errorMessage = strings.workNameRequired
                         else -> {
                             onConfirm(name.trim())
                             onDismiss()
@@ -212,12 +219,12 @@ fun AddWorkDialog(
                     }
                 }
             ) {
-                Text(if (work == null) "Add" else "Save")
+                Text(if (work == null) strings.add else strings.save)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(strings.cancel)
             }
         }
     )

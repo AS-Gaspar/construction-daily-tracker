@@ -42,4 +42,15 @@ expect class CredentialStorage {
      * Clears all stored credentials.
      */
     fun clearAll()
+
+    /**
+     * Saves the user's preferred language code.
+     */
+    fun saveLanguage(languageCode: String)
+
+    /**
+     * Retrieves the stored language code.
+     * @return The language code, or "en" as default
+     */
+    fun getLanguage(): String
 }

@@ -26,6 +26,7 @@ private val TailwindBlue = Color(0xFF2563EB)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmployeeFormScreen(
+    strings: org.gaspar.construction_daily_tracker.i18n.Strings,
     employee: Employee? = null,
     works: List<Work>,
     roles: List<Role>,
@@ -233,7 +234,7 @@ fun EmployeeFormScreen(
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
                         Text(
-                            text = "Please create at least one Work and one Role before adding employees.",
+                            text = strings.missingWorksAndRoles,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )

@@ -41,6 +41,7 @@ data class EmployeePayrollDisplayData(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClosedPayrollDetailScreen(
+    strings: org.gaspar.construction_daily_tracker.i18n.Strings,
     periodStartDate: String,
     periodEndDate: String,
     payrolls: List<MonthlyPayroll>,
@@ -91,7 +92,7 @@ fun ClosedPayrollDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(formatPeriodLabel(periodStartDate, periodEndDate)) },
+                title = { Text(formatPeriodLabel(strings, periodStartDate, periodEndDate)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -134,7 +135,7 @@ fun ClosedPayrollDetailScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "No payroll data found",
+                            text = strings.noPayrollDataFound,
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -148,6 +149,7 @@ fun ClosedPayrollDetailScreen(
                         // Period summary card
                         item {
                             PeriodSummaryCard(
+                                strings = strings,
                                 periodStartDate = periodStartDate,
                                 periodEndDate = periodEndDate,
                                 employeeCount = employeePayrollData.size,
@@ -157,7 +159,10 @@ fun ClosedPayrollDetailScreen(
 
                         // Employee payroll cards
                         items(employeePayrollData) { data ->
-                            EmployeePayrollCard(data = data)
+                            EmployeePayrollCard(
+                                strings = strings,
+                                data = data
+                            )
                         }
                     }
                 }
@@ -168,6 +173,7 @@ fun ClosedPayrollDetailScreen(
 
 @Composable
 fun PeriodSummaryCard(
+    strings: org.gaspar.construction_daily_tracker.i18n.Strings,
     periodStartDate: String,
     periodEndDate: String,
     employeeCount: Int,
@@ -192,13 +198,13 @@ fun PeriodSummaryCard(
             ) {
                 Column {
                     Text(
-                        text = "Closed Payroll Period",
+                        text = strings.closedPayrollPeriod,
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "$periodStartDate to $periodEndDate",
+                        text = "$periodStartDate ${strings.periodRange.lowercase()} $periodEndDate",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -209,7 +215,7 @@ fun PeriodSummaryCard(
                     contentColor = Color.White
                 ) {
                     Text(
-                        text = "CLOSED",
+                        text = strings.statusClosed,
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
@@ -229,7 +235,7 @@ fun PeriodSummaryCard(
                     Text(text = "👷", style = MaterialTheme.typography.bodyLarge)
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "$employeeCount employees",
+                        text = "$employeeCount ${if (employeeCount != 1) strings.employees else strings.employee}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -252,7 +258,10 @@ fun PeriodSummaryCard(
 }
 
 @Composable
-fun EmployeePayrollCard(data: EmployeePayrollDisplayData) {
+fun EmployeePayrollCard(
+    strings: org.gaspar.construction_daily_tracker.i18n.Strings,
+    data: EmployeePayrollDisplayData
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -297,7 +306,7 @@ fun EmployeePayrollCard(data: EmployeePayrollDisplayData) {
             // Work site
             PayrollDetailRow(
                 icon = "🏗️",
-                label = "Work Site",
+                label = strings.workSite,
                 value = data.workName
             )
 
@@ -306,7 +315,7 @@ fun EmployeePayrollCard(data: EmployeePayrollDisplayData) {
             // Daily value
             PayrollDetailRow(
                 icon = "💵",
-                label = "Daily Value",
+                label = strings.dailyValue,
                 value = "R$ ${data.employee.dailyValue}"
             )
 
@@ -315,8 +324,8 @@ fun EmployeePayrollCard(data: EmployeePayrollDisplayData) {
             // Base workdays
             PayrollDetailRow(
                 icon = "📅",
-                label = "Base Workdays",
-                value = "${data.payroll.baseWorkdays} days"
+                label = strings.baseWorkdays,
+                value = "${data.payroll.baseWorkdays} ${strings.days}"
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -324,8 +333,8 @@ fun EmployeePayrollCard(data: EmployeePayrollDisplayData) {
             // Adjustments
             PayrollDetailRow(
                 icon = "⚖️",
-                label = "Adjustments",
-                value = String.format("%+.2f days", data.adjustmentSum),
+                label = strings.adjustments,
+                value = String.format("%+.2f ${strings.days}", data.adjustmentSum),
                 valueColor = if (data.adjustmentSum >= 0) TailwindGreen else Color.Red
             )
 
@@ -334,8 +343,8 @@ fun EmployeePayrollCard(data: EmployeePayrollDisplayData) {
             // Final worked days
             PayrollDetailRow(
                 icon = "✅",
-                label = "Final Worked Days",
-                value = "${data.payroll.finalWorkedDays} days",
+                label = strings.finalWorkedDays,
+                value = "${data.payroll.finalWorkedDays} ${strings.days}",
                 isBold = true
             )
 
@@ -353,7 +362,7 @@ fun EmployeePayrollCard(data: EmployeePayrollDisplayData) {
                     Text(text = "💰", style = MaterialTheme.typography.headlineSmall)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Total Payment",
+                        text = strings.totalPayment,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )

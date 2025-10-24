@@ -34,6 +34,7 @@ private val TailwindRed = Color(0xFFDC2626)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmployeeViewScreen(
+    strings: org.gaspar.construction_daily_tracker.i18n.Strings,
     employee: Employee?,
     works: List<Work>,
     roles: List<Role>,
@@ -91,12 +92,12 @@ fun EmployeeViewScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Employee Details") },
+                title = { Text(strings.employeeDetails) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -182,7 +183,7 @@ fun EmployeeViewScreen(
                 }
                 employee == null -> {
                     Text(
-                        text = "Employee not found",
+                        text = strings.employeeNotFound,
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(32.dp),
@@ -234,7 +235,7 @@ fun EmployeeViewScreen(
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
                                 Text(
-                                    text = "Employee Information",
+                                    text = strings.employeeInformation,
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -243,35 +244,35 @@ fun EmployeeViewScreen(
 
                                 // Name
                                 DetailRow(
-                                    label = "Name",
+                                    label = strings.name,
                                     value = employee.name,
                                     icon = "👤"
                                 )
 
                                 // Surname
                                 DetailRow(
-                                    label = "Surname",
+                                    label = strings.surname,
                                     value = employee.surname,
                                     icon = "👤"
                                 )
 
                                 // Role/Profession
                                 DetailRow(
-                                    label = "Profession",
-                                    value = roles.find { it.id == employee.roleId }?.title ?: "Unknown",
+                                    label = strings.profession,
+                                    value = roles.find { it.id == employee.roleId }?.title ?: strings.unknown,
                                     icon = "🔧"
                                 )
 
                                 // Work
                                 DetailRow(
-                                    label = "Work Site",
-                                    value = works.find { it.id == employee.workId }?.name ?: "Unknown",
+                                    label = strings.workSite,
+                                    value = works.find { it.id == employee.workId }?.name ?: strings.unknown,
                                     icon = "🏗️"
                                 )
 
                                 // Daily Value
                                 DetailRow(
-                                    label = "Daily Value",
+                                    label = strings.dailyValue,
                                     value = "R$ ${employee.dailyValue}",
                                     icon = "💵"
                                 )
@@ -292,19 +293,19 @@ fun EmployeeViewScreen(
                                         Spacer(modifier = Modifier.width(12.dp))
                                         Column {
                                             Text(
-                                                text = "Current Total Days",
+                                                text = strings.currentTotalDays,
                                                 style = MaterialTheme.typography.titleMedium,
                                                 fontWeight = FontWeight.Bold
                                             )
                                             Text(
-                                                text = "This month's workdays",
+                                                text = strings.thisMonthWorkdays,
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
                                         }
                                     }
                                     Text(
-                                        text = "$currentTotalDays days",
+                                        text = "$currentTotalDays ${strings.days}",
                                         style = MaterialTheme.typography.headlineSmall,
                                         color = TailwindBlue,
                                         fontWeight = FontWeight.Bold
@@ -324,13 +325,13 @@ fun EmployeeViewScreen(
                                 modifier = Modifier.padding(16.dp)
                             ) {
                                 Text(
-                                    text = "ℹ️ Information",
+                                    text = "ℹ️ ${strings.configurationInfo}",
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "Current total days = Base workdays + Adjustments (overtime, absences, etc.)",
+                                    text = strings.currentTotalDaysFormula,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -349,8 +350,8 @@ fun EmployeeViewScreen(
     if (showDeleteDialog && employee != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete Employee") },
-            text = { Text("Are you sure you want to delete ${employee.name} ${employee.surname}? This action cannot be undone.") },
+            title = { Text(strings.deleteEmployee) },
+            text = { Text("${strings.deleteEmployeeQuestion} ${employee.name} ${employee.surname}? ${strings.actionCannotBeUndone}") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -361,12 +362,12 @@ fun EmployeeViewScreen(
                         contentColor = TailwindRed
                     )
                 ) {
-                    Text("Delete")
+                    Text(strings.delete)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
+                    Text(strings.cancel)
                 }
             }
         )
@@ -378,12 +379,12 @@ fun EmployeeViewScreen(
 
         AlertDialog(
             onDismissRequest = { showAssignWorkDialog = false },
-            title = { Text("Assign to Work") },
+            title = { Text(strings.assignWorkDialogTitle) },
             text = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text("Select a work site to assign ${employee.name} ${employee.surname} to:")
+                    Text("${strings.selectWork}: ${employee.name} ${employee.surname}")
 
                     // Dropdown for selecting work
                     var expanded by remember { mutableStateOf(false) }
@@ -394,10 +395,10 @@ fun EmployeeViewScreen(
                         onExpandedChange = { expanded = it }
                     ) {
                         OutlinedTextField(
-                            value = selectedWork?.name ?: "Select work...",
+                            value = selectedWork?.name ?: strings.selectWork,
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("Work Site") },
+                            label = { Text(strings.workSite) },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                             modifier = Modifier
                                 .menuAnchor()

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.gaspar.construction_daily_tracker.i18n.Strings
 import org.gaspar.construction_daily_tracker.model.Employee
 import org.gaspar.construction_daily_tracker.model.Work
 import org.gaspar.construction_daily_tracker.model.Role
@@ -40,6 +41,7 @@ data class EmployeeDisplayData(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmployeeListScreen(
+    strings: Strings,
     employees: List<Employee>,
     works: List<Work>,
     roles: List<Role>,
@@ -57,7 +59,7 @@ fun EmployeeListScreen(
     }
 
     // Calculate display data for each employee
-    val employeeDisplayData = remember(sortedEmployees, works, roles, payrolls, adjustments) {
+    val employeeDisplayData = remember(sortedEmployees, works, roles, payrolls, adjustments, strings) {
         sortedEmployees.map { employee ->
             val work = works.find { it.id == employee.workId }
             val role = roles.find { it.id == employee.roleId }
@@ -88,8 +90,8 @@ fun EmployeeListScreen(
 
             EmployeeDisplayData(
                 employee = employee,
-                workName = work?.name ?: "Unknown",
-                roleName = role?.title ?: "Unknown",
+                workName = work?.name ?: strings.unknown,
+                roleName = role?.title ?: strings.unknown,
                 currentTotalDays = totalDays
             )
         }
@@ -98,12 +100,12 @@ fun EmployeeListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Employees") },
+                title = { Text(strings.employeesTitle) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -141,6 +143,7 @@ fun EmployeeListScreen(
                         // List all employees alphabetically
                         items(employeeDisplayData) { displayData ->
                             EmployeeCard(
+                                strings = strings,
                                 displayData = displayData,
                                 onClick = { onEmployeeClick(displayData.employee) }
                             )
@@ -148,7 +151,10 @@ fun EmployeeListScreen(
 
                         // Add new employee button at the bottom
                         item {
-                            AddNewEmployeeButton(onClick = onAddEmployee)
+                            AddNewEmployeeButton(
+                                strings = strings,
+                                onClick = onAddEmployee
+                            )
                         }
                     }
                 }
@@ -159,6 +165,7 @@ fun EmployeeListScreen(
 
 @Composable
 fun EmployeeCard(
+    strings: Strings,
     displayData: EmployeeDisplayData,
     onClick: () -> Unit
 ) {
@@ -223,7 +230,7 @@ fun EmployeeCard(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${displayData.currentTotalDays} days",
+                        text = "${displayData.currentTotalDays} ${strings.days}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = TailwindBlue,
                         fontWeight = FontWeight.SemiBold
@@ -236,6 +243,7 @@ fun EmployeeCard(
 
 @Composable
 fun AddNewEmployeeButton(
+    strings: Strings,
     onClick: () -> Unit
 ) {
     OutlinedCard(
@@ -256,13 +264,13 @@ fun AddNewEmployeeButton(
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Add",
+                contentDescription = strings.add,
                 tint = TailwindBlue,
                 modifier = Modifier.size(28.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = "Add New Employee",
+                text = strings.addNewEmployee,
                 style = MaterialTheme.typography.titleLarge,
                 color = TailwindBlue
             )

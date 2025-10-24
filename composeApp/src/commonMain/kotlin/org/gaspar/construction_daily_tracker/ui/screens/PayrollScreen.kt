@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.gaspar.construction_daily_tracker.i18n.Strings
 import org.gaspar.construction_daily_tracker.model.Employee
 import org.gaspar.construction_daily_tracker.model.MonthlyPayroll
 
@@ -38,6 +39,7 @@ data class PayrollPeriod(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PayrollScreen(
+    strings: Strings,
     payrolls: List<MonthlyPayroll>,
     employees: List<Employee>,
     isLoading: Boolean,
@@ -64,12 +66,12 @@ fun PayrollScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Monthly Payroll") },
+                title = { Text(strings.payrollTitle) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -113,13 +115,13 @@ fun PayrollScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "No payroll history yet",
+                            text = strings.noPayrollHistory,
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Payroll periods will appear here once generated.\nPeriods run from 6th to 5th of each month.",
+                            text = strings.payrollPeriodInfo,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -132,6 +134,7 @@ fun PayrollScreen(
                     ) {
                         items(payrollPeriods) { period ->
                             PayrollPeriodCard(
+                                strings = strings,
                                 period = period,
                                 employeeCount = employees.size,
                                 onClick = { onPeriodClick(period) }
@@ -146,6 +149,7 @@ fun PayrollScreen(
 
 @Composable
 fun PayrollPeriodCard(
+    strings: org.gaspar.construction_daily_tracker.i18n.Strings,
     period: PayrollPeriod,
     employeeCount: Int,
     onClick: () -> Unit
@@ -182,7 +186,7 @@ fun PayrollPeriodCard(
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = formatPeriodLabel(period.periodStartDate, period.periodEndDate),
+                            text = formatPeriodLabel(strings, period.periodStartDate, period.periodEndDate),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -202,7 +206,7 @@ fun PayrollPeriodCard(
                         contentColor = Color.White
                     ) {
                         Text(
-                            text = "CURRENT",
+                            text = strings.statusCurrent,
                             style = MaterialTheme.typography.labelMedium,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                         )
@@ -213,7 +217,7 @@ fun PayrollPeriodCard(
                         contentColor = Color.White
                     ) {
                         Text(
-                            text = "CLOSED",
+                            text = strings.statusClosed,
                             style = MaterialTheme.typography.labelMedium,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                         )
@@ -235,7 +239,7 @@ fun PayrollPeriodCard(
                     Text(text = "👷", style = MaterialTheme.typography.bodyLarge)
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "${period.payrolls.size} employees",
+                        text = "${period.payrolls.size} ${strings.employeesTitle}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -261,7 +265,7 @@ fun PayrollPeriodCard(
             if (period.isCurrent) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "→ Tap to view employee list",
+                    text = strings.tapToViewEmployeeList,
                     style = MaterialTheme.typography.bodySmall,
                     color = TailwindBlue,
                     fontWeight = FontWeight.Medium
@@ -269,7 +273,7 @@ fun PayrollPeriodCard(
             } else {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "→ Tap to view payroll details",
+                    text = strings.tapToViewPayrollDetails,
                     style = MaterialTheme.typography.bodySmall,
                     color = TailwindGreen,
                     fontWeight = FontWeight.Medium
@@ -283,27 +287,27 @@ fun PayrollPeriodCard(
  * Format period label to show month/year
  * Example: "2025-01-06 to 2025-02-05" -> "January 2025"
  */
-fun formatPeriodLabel(startDate: String, endDate: String): String {
+fun formatPeriodLabel(strings: org.gaspar.construction_daily_tracker.i18n.Strings, startDate: String, endDate: String): String {
     return try {
         val parts = startDate.split("-")
         val year = parts[0]
         val month = when (parts[1]) {
-            "01" -> "January"
-            "02" -> "February"
-            "03" -> "March"
-            "04" -> "April"
-            "05" -> "May"
-            "06" -> "June"
-            "07" -> "July"
-            "08" -> "August"
-            "09" -> "September"
-            "10" -> "October"
-            "11" -> "November"
-            "12" -> "December"
-            else -> "Unknown"
+            "01" -> strings.monthJanuary
+            "02" -> strings.monthFebruary
+            "03" -> strings.monthMarch
+            "04" -> strings.monthApril
+            "05" -> strings.monthMay
+            "06" -> strings.monthJune
+            "07" -> strings.monthJuly
+            "08" -> strings.monthAugust
+            "09" -> strings.monthSeptember
+            "10" -> strings.monthOctober
+            "11" -> strings.monthNovember
+            "12" -> strings.monthDecember
+            else -> strings.unknown
         }
         "$month $year"
     } catch (e: Exception) {
-        "Unknown Period"
+        strings.unknown
     }
 }

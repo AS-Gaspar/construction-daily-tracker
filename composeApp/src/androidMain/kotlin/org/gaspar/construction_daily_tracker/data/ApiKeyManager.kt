@@ -74,9 +74,29 @@ class ApiKeyManager(context: Context) {
         encryptedPrefs.edit().clear().apply()
     }
 
+    /**
+     * Saves the user's preferred language code.
+     * @param languageCode The language code (e.g., "en", "pt")
+     */
+    fun saveLanguage(languageCode: String) {
+        encryptedPrefs.edit()
+            .putString(KEY_LANGUAGE, languageCode)
+            .apply()
+    }
+
+    /**
+     * Retrieves the stored language code.
+     * @return The language code, or "en" as default
+     */
+    fun getLanguage(): String {
+        return encryptedPrefs.getString(KEY_LANGUAGE, DEFAULT_LANGUAGE) ?: DEFAULT_LANGUAGE
+    }
+
     companion object {
         private const val KEY_API_KEY = "api_key"
         private const val KEY_SERVER_URL = "server_url"
+        private const val KEY_LANGUAGE = "language"
         private const val DEFAULT_SERVER_URL = "http://10.0.2.2:8080" // Android emulator localhost
+        private const val DEFAULT_LANGUAGE = "en"
     }
 }

@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import org.gaspar.construction_daily_tracker.i18n.Language
+import org.gaspar.construction_daily_tracker.i18n.Strings
 
 // Tailwind blue-600
 private val TailwindBlue = Color(0xFF2563EB)
@@ -28,13 +30,16 @@ private val TailwindBlue = Color(0xFF2563EB)
 fun SettingsScreen(
     currentServerUrl: String = "",
     currentApiKey: String = "",
+    currentLanguage: Language = Language.ENGLISH,
+    strings: Strings,
     errorMessage: String? = null,
     successMessage: String? = null,
     isLoading: Boolean = false,
     showBackButton: Boolean = true,
     onSave: (serverUrl: String, apiKey: String) -> Unit,
     onBack: () -> Unit,
-    onTestConnection: (() -> Unit)? = null
+    onTestConnection: (() -> Unit)? = null,
+    onLanguageChange: (Language) -> Unit = {}
 ) {
     var serverUrl by remember { mutableStateOf(currentServerUrl) }
     var apiKey by remember { mutableStateOf(currentApiKey) }
@@ -55,10 +60,12 @@ fun SettingsScreen(
         }
     }
 
+    var showLanguageDropdown by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("API Settings") },
+                title = { Text(strings.settingsTitle) },
                 navigationIcon = {
                     if (showBackButton) {
                         IconButton(onClick = onBack) {
@@ -84,16 +91,58 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Language Section
             Text(
-                text = "Configure your API connection",
-                style = MaterialTheme.typography.bodyLarge
+                text = strings.languageSettings,
+                style = MaterialTheme.typography.titleMedium,
+                color = TailwindBlue
+            )
+
+            ExposedDropdownMenuBox(
+                expanded = showLanguageDropdown,
+                onExpandedChange = { showLanguageDropdown = !showLanguageDropdown }
+            ) {
+                OutlinedTextField(
+                    value = currentLanguage.displayName,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text(strings.selectLanguage) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = showLanguageDropdown) },
+                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor()
+                )
+                ExposedDropdownMenu(
+                    expanded = showLanguageDropdown,
+                    onDismissRequest = { showLanguageDropdown = false }
+                ) {
+                    Language.entries.forEach { language ->
+                        DropdownMenuItem(
+                            text = { Text(language.displayName) },
+                            onClick = {
+                                onLanguageChange(language)
+                                showLanguageDropdown = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // API Settings Section
+            Text(
+                text = strings.apiSettings,
+                style = MaterialTheme.typography.titleMedium,
+                color = TailwindBlue
             )
 
             // Server URL input
             OutlinedTextField(
                 value = serverUrl,
                 onValueChange = { serverUrl = it },
-                label = { Text("Server URL") },
+                label = { Text(strings.serverUrl) },
                 placeholder = { Text("http://your-server.com:8080") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
@@ -109,7 +158,7 @@ fun SettingsScreen(
             OutlinedTextField(
                 value = apiKey,
                 onValueChange = { apiKey = it.trim() }, // Auto-trim whitespace
-                label = { Text("API Key") },
+                label = { Text(strings.apiKey) },
                 placeholder = { Text("Paste your API key here") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -216,7 +265,7 @@ fun SettingsScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                     }
-                    Text("Test Connection")
+                    Text(strings.testConnection)
                 }
             }
 
@@ -239,7 +288,7 @@ fun SettingsScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text("Save Configuration")
+                Text(strings.saveSettings)
             }
 
             // Info card

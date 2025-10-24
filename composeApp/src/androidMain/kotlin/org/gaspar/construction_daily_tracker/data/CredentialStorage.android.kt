@@ -38,4 +38,12 @@ actual class CredentialStorage(context: Context) {
     actual fun clearAll() {
         apiKeyManager.clearAll()
     }
+
+    actual fun saveLanguage(languageCode: String) {
+        apiKeyManager.saveLanguage(languageCode)
+    }
+
+    actual fun getLanguage(): String {
+        return apiKeyManager.getLanguage()
+    }
 }

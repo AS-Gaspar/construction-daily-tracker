@@ -20,6 +20,7 @@ import org.gaspar.construction_daily_tracker.model.Employee
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DayAdjustmentsScreen(
+    strings: org.gaspar.construction_daily_tracker.i18n.Strings,
     adjustments: List<DayAdjustment>,
     employees: List<Employee>,
     isLoading: Boolean,
@@ -30,7 +31,7 @@ fun DayAdjustmentsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Daily Work Adjustments") },
+                title = { Text(strings.dailyWorkAdjustments) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Text("←", style = MaterialTheme.typography.headlineMedium)
@@ -69,13 +70,13 @@ fun DayAdjustmentsScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "No adjustments yet",
+                            text = strings.noAdjustmentsYet,
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Add work adjustments like:\n• +1 for Saturday work\n• -0.5 for half-day absence",
+                            text = strings.adjustmentExamples,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -173,6 +174,7 @@ fun AdjustmentCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAdjustmentDialog(
+    strings: org.gaspar.construction_daily_tracker.i18n.Strings,
     employees: List<Employee>,
     onDismiss: () -> Unit,
     onConfirm: (employeeId: Int, date: String, adjustmentValue: String, notes: String) -> Unit
@@ -186,7 +188,7 @@ fun AddAdjustmentDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add Work Adjustment") },
+        title = { Text(strings.addWorkAdjustment) },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)

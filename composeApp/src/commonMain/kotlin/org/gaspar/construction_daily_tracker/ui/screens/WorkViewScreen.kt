@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.gaspar.construction_daily_tracker.i18n.Strings
 import org.gaspar.construction_daily_tracker.model.Work
 import org.gaspar.construction_daily_tracker.model.Employee
 
@@ -34,6 +35,7 @@ private val TailwindRed = Color(0xFFDC2626)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkViewScreen(
+    strings: Strings,
     work: Work?,
     employees: List<Employee>,
     isLoading: Boolean,
@@ -72,12 +74,12 @@ fun WorkViewScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Work Details") },
+                title = { Text(strings.workDetails) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -102,7 +104,7 @@ fun WorkViewScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit Work"
+                            contentDescription = strings.editWork
                         )
                     }
 
@@ -114,7 +116,7 @@ fun WorkViewScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Work"
+                            contentDescription = strings.deleteWork
                         )
                     }
                 }
@@ -135,7 +137,7 @@ fun WorkViewScreen(
                 }
                 work == null -> {
                     Text(
-                        text = "Work not found",
+                        text = strings.workNotFound,
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(32.dp),
@@ -187,7 +189,7 @@ fun WorkViewScreen(
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
                                 Text(
-                                    text = "Work Information",
+                                    text = strings.workInformation,
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -196,15 +198,15 @@ fun WorkViewScreen(
 
                                 // Work Name
                                 DetailRow(
-                                    label = "Work",
+                                    label = strings.work,
                                     value = work.name,
                                     icon = "🏗️"
                                 )
 
                                 // Number of employees
                                 DetailRow(
-                                    label = "Employees",
-                                    value = "${workEmployees.size} employee${if (workEmployees.size != 1) "s" else ""}",
+                                    label = strings.employees.replaceFirstChar { it.uppercase() },
+                                    value = "${workEmployees.size} ${if (workEmployees.size != 1) strings.employees else strings.employee}",
                                     icon = "👷"
                                 )
                             }
@@ -219,7 +221,7 @@ fun WorkViewScreen(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 Text(
-                                    text = "Assigned Employees",
+                                    text = strings.assignedEmployees,
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -275,13 +277,13 @@ fun WorkViewScreen(
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.Add,
-                                            contentDescription = "Add",
+                                            contentDescription = strings.add,
                                             tint = TailwindBlue,
                                             modifier = Modifier.size(24.dp)
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
-                                            text = "Add New Employee",
+                                            text = strings.addNewEmployee,
                                             style = MaterialTheme.typography.titleMedium,
                                             color = TailwindBlue
                                         )
@@ -301,6 +303,7 @@ fun WorkViewScreen(
     // Edit Dialog
     if (showEditDialog && work != null) {
         AddWorkDialog(
+            strings = strings,
             work = work,
             onDismiss = { showEditDialog = false },
             onConfirm = { name ->
@@ -314,21 +317,21 @@ fun WorkViewScreen(
     if (showDeleteDialog && work != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete Work") },
+            title = { Text(strings.deleteWork) },
             text = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text("Are you sure you want to delete \"${work.name}\"?")
+                    Text("${strings.deleteWorkConfirmQuestion} \"${work.name}\"?")
                     if (workEmployees.isNotEmpty()) {
                         Text(
-                            text = "⚠️ Warning: This work has ${workEmployees.size} employee(s) assigned. Deleting it may affect their records.",
+                            text = strings.deleteWorkWarning,
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
                     Text(
-                        text = "This action cannot be undone.",
+                        text = strings.actionCannotBeUndone,
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -343,12 +346,12 @@ fun WorkViewScreen(
                         contentColor = TailwindRed
                     )
                 ) {
-                    Text("Delete")
+                    Text(strings.delete)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
+                    Text(strings.cancel)
                 }
             }
         )

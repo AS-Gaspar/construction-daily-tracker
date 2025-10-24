@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import io.ktor.client.*
 import kotlinx.coroutines.launch
 import org.gaspar.construction_daily_tracker.data.CredentialStorage
+import org.gaspar.construction_daily_tracker.i18n.Language
+import org.gaspar.construction_daily_tracker.i18n.Strings
+import org.gaspar.construction_daily_tracker.i18n.getStrings
 import org.gaspar.construction_daily_tracker.model.*
 import org.gaspar.construction_daily_tracker.navigation.NavigationState
 import org.gaspar.construction_daily_tracker.navigation.Screen
@@ -38,6 +41,13 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
         private set
 
     var successMessage by mutableStateOf<String?>(null)
+        private set
+
+    // Language state
+    var currentLanguage by mutableStateOf(Language.fromCode(credentialStorage.getLanguage()))
+        private set
+
+    var strings by mutableStateOf<Strings>(getStrings(currentLanguage))
         private set
 
     init {
@@ -116,6 +126,15 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
      */
     fun getCurrentApiKey(): String {
         return credentialStorage.getApiKey() ?: ""
+    }
+
+    /**
+     * Change the app language.
+     */
+    fun changeLanguage(language: Language) {
+        currentLanguage = language
+        strings = getStrings(language)
+        credentialStorage.saveLanguage(language.code)
     }
 
     /**

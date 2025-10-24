@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.gaspar.construction_daily_tracker.i18n.Strings
 import org.gaspar.construction_daily_tracker.model.Employee
 import org.gaspar.construction_daily_tracker.model.Role
 import org.gaspar.construction_daily_tracker.model.MonthlyPayroll
@@ -26,6 +27,7 @@ private val TailwindBlue = Color(0xFF2563EB)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UnassignedEmployeesScreen(
+    strings: Strings,
     employees: List<Employee>,
     roles: List<Role>,
     payrolls: List<MonthlyPayroll> = emptyList(),
@@ -42,7 +44,7 @@ fun UnassignedEmployeesScreen(
     }
 
     // Calculate display data for each employee
-    val employeeDisplayData = remember(unassignedEmployees, roles, payrolls, adjustments) {
+    val employeeDisplayData = remember(unassignedEmployees, roles, payrolls, adjustments, strings) {
         unassignedEmployees.map { employee ->
             val role = roles.find { it.id == employee.roleId }
 
@@ -71,8 +73,8 @@ fun UnassignedEmployeesScreen(
 
             EmployeeDisplayData(
                 employee = employee,
-                workName = "No Work",
-                roleName = role?.title ?: "Unknown",
+                workName = strings.noWork ?: "No Work",
+                roleName = role?.title ?: strings.unknown,
                 currentTotalDays = totalDays
             )
         }
@@ -83,9 +85,9 @@ fun UnassignedEmployeesScreen(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Unassigned Employees")
+                        Text(strings.unassignedEmployees)
                         Text(
-                            text = "${unassignedEmployees.size} employee${if (unassignedEmployees.size != 1) "s" else ""}",
+                            text = "${unassignedEmployees.size} ${if (unassignedEmployees.size != 1) strings.employees else strings.employee}",
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
@@ -94,7 +96,7 @@ fun UnassignedEmployeesScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -137,12 +139,12 @@ fun UnassignedEmployeesScreen(
                             style = MaterialTheme.typography.displayLarge
                         )
                         Text(
-                            text = "All employees assigned!",
+                            text = strings.allEmployeesAssigned,
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "No employees are currently unassigned.",
+                            text = strings.noEmployeesUnassigned,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -174,13 +176,13 @@ fun UnassignedEmployeesScreen(
                                     )
                                     Column {
                                         Text(
-                                            text = "Employees without work assignment",
+                                            text = strings.employeesWithoutWork,
                                             style = MaterialTheme.typography.titleLarge,
                                             fontWeight = FontWeight.Bold,
                                             color = MaterialTheme.colorScheme.onErrorContainer
                                         )
                                         Text(
-                                            text = "Click on an employee to assign them to a work",
+                                            text = strings.clickToAssignWork,
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = MaterialTheme.colorScheme.onErrorContainer
                                         )
@@ -192,6 +194,7 @@ fun UnassignedEmployeesScreen(
                         // List all unassigned employees
                         items(employeeDisplayData) { displayData ->
                             EmployeeCard(
+                                strings = strings,
                                 displayData = displayData,
                                 onClick = { onEmployeeClick(displayData.employee) }
                             )

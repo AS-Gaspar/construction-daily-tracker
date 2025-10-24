@@ -19,6 +19,8 @@ fun App() {
             SettingsScreen(
                 currentServerUrl = viewModel.getCurrentServerUrl(),
                 currentApiKey = viewModel.getCurrentApiKey(),
+                currentLanguage = viewModel.currentLanguage,
+                strings = viewModel.strings,
                 errorMessage = viewModel.errorMessage,
                 successMessage = viewModel.successMessage,
                 isLoading = viewModel.isLoading,
@@ -29,6 +31,9 @@ fun App() {
                 onBack = { /* Can't go back from initial setup */ },
                 onTestConnection = {
                     viewModel.testConnection()
+                },
+                onLanguageChange = { language ->
+                    viewModel.changeLanguage(language)
                 }
             )
         } else {
@@ -38,6 +43,7 @@ fun App() {
             // Dialogs
             if (viewModel.showAddWorkDialog) {
                 AddWorkDialog(
+                    strings = viewModel.strings,
                     onDismiss = { viewModel.showAddWorkDialog = false },
                     onConfirm = { name -> viewModel.createWork(name) }
                 )
@@ -52,6 +58,7 @@ fun App() {
 
             if (viewModel.showAddAdjustmentDialog) {
                 AddAdjustmentDialog(
+                    strings = viewModel.strings,
                     employees = viewModel.employees,
                     onDismiss = { viewModel.showAddAdjustmentDialog = false },
                     onConfirm = { employeeId, date, adjustmentValue, notes ->
@@ -73,12 +80,14 @@ fun AppContent(viewModel: AppViewModel) {
     when (val screen = viewModel.navigationState.currentScreen) {
         Screen.Home -> {
             HomeScreen(
+                strings = viewModel.strings,
                 onNavigate = { viewModel.navigationState.navigateTo(it) }
             )
         }
 
         Screen.Works -> {
             WorksScreen(
+                strings = viewModel.strings,
                 works = viewModel.works,
                 isLoading = viewModel.isLoading,
                 onAddWork = { viewModel.showAddWorkDialog = true },
@@ -97,6 +106,7 @@ fun AppContent(viewModel: AppViewModel) {
                 viewModel.works.find { it.id == id }
             }
             WorkViewScreen(
+                strings = viewModel.strings,
                 work = work,
                 employees = viewModel.employees,
                 isLoading = viewModel.isLoading,
@@ -124,6 +134,7 @@ fun AppContent(viewModel: AppViewModel) {
 
         Screen.Roles -> {
             RolesScreen(
+                strings = viewModel.strings,
                 roles = viewModel.roles,
                 isLoading = viewModel.isLoading,
                 onAddRole = { viewModel.showAddRoleDialog = true },
@@ -135,6 +146,7 @@ fun AppContent(viewModel: AppViewModel) {
 
         Screen.Employees -> {
             EmployeeListScreen(
+                strings = viewModel.strings,
                 employees = viewModel.employees,
                 works = viewModel.works,
                 roles = viewModel.roles,
@@ -156,6 +168,7 @@ fun AppContent(viewModel: AppViewModel) {
 
         Screen.UnassignedEmployees -> {
             UnassignedEmployeesScreen(
+                strings = viewModel.strings,
                 employees = viewModel.employees,
                 roles = viewModel.roles,
                 payrolls = viewModel.payrolls,
@@ -176,6 +189,7 @@ fun AppContent(viewModel: AppViewModel) {
                 viewModel.employees.find { it.id == id }
             }
             EmployeeViewScreen(
+                strings = viewModel.strings,
                 employee = employee,
                 works = viewModel.works,
                 roles = viewModel.roles,
@@ -210,6 +224,7 @@ fun AppContent(viewModel: AppViewModel) {
                 viewModel.employees.find { it.id == id }
             }
             EmployeeFormScreen(
+                strings = viewModel.strings,
                 employee = employee,
                 works = viewModel.works,
                 roles = viewModel.roles,
@@ -229,6 +244,7 @@ fun AppContent(viewModel: AppViewModel) {
 
         Screen.DailyAdjustments -> {
             DayAdjustmentsScreen(
+                strings = viewModel.strings,
                 adjustments = viewModel.dayAdjustments,
                 employees = viewModel.employees,
                 isLoading = viewModel.isLoading,
@@ -240,6 +256,7 @@ fun AppContent(viewModel: AppViewModel) {
 
         Screen.Payroll -> {
             PayrollScreen(
+                strings = viewModel.strings,
                 payrolls = viewModel.payrolls,
                 employees = viewModel.employees,
                 isLoading = viewModel.isLoading,
@@ -264,6 +281,7 @@ fun AppContent(viewModel: AppViewModel) {
 
         is Screen.ClosedPayrollDetail -> {
             ClosedPayrollDetailScreen(
+                strings = viewModel.strings,
                 periodStartDate = screen.periodStartDate,
                 periodEndDate = screen.periodEndDate,
                 payrolls = viewModel.payrolls,
@@ -280,6 +298,7 @@ fun AppContent(viewModel: AppViewModel) {
             val employee = viewModel.employees.find { it.id == screen.employeeId }
             DayAdjustmentFormScreen(
                 employee = employee,
+                strings = viewModel.strings,
                 onBack = { viewModel.navigationState.navigateBack() },
                 onSave = { date, adjustmentValue, notes ->
                     viewModel.createDayAdjustment(screen.employeeId, date, adjustmentValue, notes)
@@ -292,6 +311,8 @@ fun AppContent(viewModel: AppViewModel) {
             SettingsScreen(
                 currentServerUrl = viewModel.getCurrentServerUrl(),
                 currentApiKey = viewModel.getCurrentApiKey(),
+                currentLanguage = viewModel.currentLanguage,
+                strings = viewModel.strings,
                 errorMessage = viewModel.errorMessage,
                 successMessage = viewModel.successMessage,
                 isLoading = viewModel.isLoading,
@@ -301,12 +322,16 @@ fun AppContent(viewModel: AppViewModel) {
                 onBack = { viewModel.navigationState.navigateBack() },
                 onTestConnection = {
                     viewModel.testConnection()
+                },
+                onLanguageChange = { language ->
+                    viewModel.changeLanguage(language)
                 }
             )
         }
 
         Screen.Configuration -> {
             ConfigurationScreen(
+                strings = viewModel.strings,
                 onNavigate = { viewModel.navigationState.navigateTo(it) },
                 onBack = { viewModel.navigationState.navigateBack() }
             )
@@ -315,6 +340,7 @@ fun AppContent(viewModel: AppViewModel) {
         else -> {
             // Fallback to home for any unknown screens
             HomeScreen(
+                strings = viewModel.strings,
                 onNavigate = { viewModel.navigationState.navigateTo(it) }
             )
         }

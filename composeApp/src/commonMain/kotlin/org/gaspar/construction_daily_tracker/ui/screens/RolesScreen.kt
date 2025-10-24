@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.gaspar.construction_daily_tracker.i18n.Strings
 import org.gaspar.construction_daily_tracker.model.Role
 
 /**
@@ -17,6 +18,7 @@ import org.gaspar.construction_daily_tracker.model.Role
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RolesScreen(
+    strings: Strings,
     roles: List<Role>,
     isLoading: Boolean,
     onAddRole: () -> Unit,
@@ -27,7 +29,7 @@ fun RolesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Job Roles") },
+                title = { Text(strings.rolesTitle) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Text("←", style = MaterialTheme.typography.headlineMedium)
@@ -66,13 +68,13 @@ fun RolesScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "No job roles yet",
+                            text = strings.noJobRoles,
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Add roles like Carpenter, Electrician, etc.",
+                            text = strings.roleExamples,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.gaspar.construction_daily_tracker.i18n.Strings
 import org.gaspar.construction_daily_tracker.navigation.Screen
 
 data class ConfigItem(
@@ -26,6 +27,7 @@ data class ConfigItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfigurationScreen(
+    strings: Strings,
     onNavigate: (Screen) -> Unit,
     onBack: () -> Unit
 ) {
@@ -33,26 +35,26 @@ fun ConfigurationScreen(
         ConfigItem(
             screen = Screen.Roles,
             icon = "🔧",
-            title = "Roles",
-            description = "Manage job roles (carpenter, electrician, etc.)"
+            title = strings.rolesConfiguration,
+            description = strings.rolesConfigurationDescription
         ),
         ConfigItem(
             screen = Screen.Settings,
             icon = "⚙️",
-            title = "API Settings",
-            description = "Configure server URL and API key"
+            title = strings.apiConfiguration,
+            description = strings.apiConfigurationDescription
         )
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Configuration") },
+                title = { Text(strings.configurationTitle) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -95,12 +97,12 @@ fun ConfigurationScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "ℹ️ Configuration",
+                        text = "ℹ️ ${strings.configurationInfo}",
                         style = MaterialTheme.typography.titleSmall
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Manage app settings and advanced features here.",
+                        text = strings.configurationInfoDescription,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
