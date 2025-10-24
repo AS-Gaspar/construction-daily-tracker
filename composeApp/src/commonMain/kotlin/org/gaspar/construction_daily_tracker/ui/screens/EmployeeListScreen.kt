@@ -197,7 +197,7 @@ fun EmployeeCard(
             ) {
                 // Name
                 Text(
-                    text = "${displayData.employee.name} ${displayData.employee.surname}",
+                    text = "${displayData.employee.name}" + if (displayData.employee.surname.isNotEmpty()) " (${displayData.employee.surname})" else "",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
