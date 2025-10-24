@@ -263,18 +263,13 @@ fun AppContent(viewModel: AppViewModel) {
                 onBack = { viewModel.navigationState.navigateBack() },
                 onRefresh = { viewModel.refreshAll() },
                 onPeriodClick = { period ->
-                    if (period.isCurrent) {
-                        // Navigate to Employees for current month
-                        viewModel.navigationState.navigateTo(Screen.Employees)
-                    } else {
-                        // Navigate to closed payroll detail
-                        viewModel.navigationState.navigateTo(
-                            Screen.ClosedPayrollDetail(
-                                periodStartDate = period.periodStartDate,
-                                periodEndDate = period.periodEndDate
-                            )
+                    // Navigate to works list for this payroll period
+                    viewModel.navigationState.navigateTo(
+                        Screen.PayrollWorksList(
+                            periodStartDate = period.periodStartDate,
+                            periodEndDate = period.periodEndDate
                         )
-                    }
+                    )
                 }
             )
         }
@@ -304,6 +299,45 @@ fun AppContent(viewModel: AppViewModel) {
                     viewModel.createDayAdjustment(screen.employeeId, date, adjustmentValue, notes)
                 },
                 isLoading = viewModel.isLoading
+            )
+        }
+
+        is Screen.PayrollWorksList -> {
+            WorksPayrollListScreen(
+                strings = viewModel.strings,
+                periodStartDate = screen.periodStartDate,
+                periodEndDate = screen.periodEndDate,
+                payrolls = viewModel.payrolls,
+                employees = viewModel.employees,
+                works = viewModel.works,
+                isLoading = viewModel.isLoading,
+                onBack = { viewModel.navigationState.navigateBack() },
+                onWorkClick = { workId ->
+                    viewModel.navigationState.navigateTo(
+                        Screen.PayrollWorkEmployees(
+                            periodStartDate = screen.periodStartDate,
+                            periodEndDate = screen.periodEndDate,
+                            workId = workId
+                        )
+                    )
+                }
+            )
+        }
+
+        is Screen.PayrollWorkEmployees -> {
+            WorkEmployeesPayrollScreen(
+                strings = viewModel.strings,
+                periodStartDate = screen.periodStartDate,
+                periodEndDate = screen.periodEndDate,
+                workId = screen.workId,
+                payrolls = viewModel.payrolls,
+                employees = viewModel.employees,
+                works = viewModel.works,
+                isLoading = viewModel.isLoading,
+                onBack = { viewModel.navigationState.navigateBack() },
+                onEmployeeClick = { employeeId ->
+                    viewModel.navigationState.navigateTo(Screen.EmployeeDetail(employeeId))
+                }
             )
         }
 

@@ -160,6 +160,13 @@ interface Strings {
     val roleExamples: String
     val tapToViewEmployeeList: String
     val tapToViewPayrollDetails: String
+    val payrollByWorks: String
+    val workPayrollDetails: String
+    val totalToPay: String
+    val viewEmployeeDetails: String
+    val noWorksInPayroll: String
+    val noEmployeesInWorkPayroll: String
+    val employeesInWork: String
 
     // Settings Screen
     val apiSettings: String
@@ -355,6 +362,13 @@ class EnglishStrings : Strings {
     override val roleExamples = "Add roles like Carpenter, Electrician, etc."
     override val tapToViewEmployeeList = "→ Tap to view employee list"
     override val tapToViewPayrollDetails = "→ Tap to view payroll details"
+    override val payrollByWorks = "Payroll by Works"
+    override val workPayrollDetails = "Work Payroll Details"
+    override val totalToPay = "Total to Pay"
+    override val viewEmployeeDetails = "View Details"
+    override val noWorksInPayroll = "No works with employees in this payroll period"
+    override val noEmployeesInWorkPayroll = "No employees in this work for this period"
+    override val employeesInWork = "Employees in Work"
 
     override val apiSettings = "API Settings"
     override val serverUrl = "Server URL"
@@ -545,6 +559,13 @@ class PortugueseStrings : Strings {
     override val roleExamples = "Adicione funções como Pedreiro, Eletricista, etc."
     override val tapToViewEmployeeList = "→ Toque para ver a lista de funcionários"
     override val tapToViewPayrollDetails = "→ Toque para ver os detalhes da folha de pagamento"
+    override val payrollByWorks = "Folha de Pagamento por Obras"
+    override val workPayrollDetails = "Detalhes da Folha de Pagamento da Obra"
+    override val totalToPay = "Total a Pagar"
+    override val viewEmployeeDetails = "Ver Detalhes"
+    override val noWorksInPayroll = "Nenhuma obra com funcionários neste período de pagamento"
+    override val noEmployeesInWorkPayroll = "Nenhum funcionário nesta obra para este período"
+    override val employeesInWork = "Funcionários na Obra"
 
     override val apiSettings = "Configurações da API"
     override val serverUrl = "URL do Servidor"
