@@ -20,7 +20,9 @@ fun App() {
                 currentServerUrl = viewModel.getCurrentServerUrl(),
                 currentApiKey = viewModel.getCurrentApiKey(),
                 errorMessage = viewModel.errorMessage,
+                successMessage = viewModel.successMessage,
                 isLoading = viewModel.isLoading,
+                showBackButton = false,
                 onSave = { serverUrl, apiKey ->
                     viewModel.configureApi(serverUrl, apiKey)
                 },
@@ -190,6 +192,10 @@ fun AppContent(viewModel: AppViewModel) {
                     // Delete employee
                     viewModel.deleteEmployee(emp.id)
                 },
+                onAddAdjustment = { employeeId ->
+                    // Navigate to adjustment form
+                    viewModel.navigationState.navigateTo(Screen.DayAdjustmentForm(employeeId))
+                },
                 onAssignToWork = { employeeId, workId ->
                     // Assign employee to work
                     viewModel.assignEmployeeToWork(employeeId, workId)
@@ -270,11 +276,24 @@ fun AppContent(viewModel: AppViewModel) {
             )
         }
 
+        is Screen.DayAdjustmentForm -> {
+            val employee = viewModel.employees.find { it.id == screen.employeeId }
+            DayAdjustmentFormScreen(
+                employee = employee,
+                onBack = { viewModel.navigationState.navigateBack() },
+                onSave = { date, adjustmentValue, notes ->
+                    viewModel.createDayAdjustment(screen.employeeId, date, adjustmentValue, notes)
+                },
+                isLoading = viewModel.isLoading
+            )
+        }
+
         Screen.Settings -> {
             SettingsScreen(
                 currentServerUrl = viewModel.getCurrentServerUrl(),
                 currentApiKey = viewModel.getCurrentApiKey(),
                 errorMessage = viewModel.errorMessage,
+                successMessage = viewModel.successMessage,
                 isLoading = viewModel.isLoading,
                 onSave = { serverUrl, apiKey ->
                     viewModel.configureApi(serverUrl, apiKey)

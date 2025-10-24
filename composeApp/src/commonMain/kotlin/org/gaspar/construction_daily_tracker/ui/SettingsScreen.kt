@@ -1,13 +1,19 @@
 package org.gaspar.construction_daily_tracker.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+
+// Tailwind blue-600
+private val TailwindBlue = Color(0xFF2563EB)
 
 /**
  * Settings screen for configuring API connection.
@@ -23,7 +29,9 @@ fun SettingsScreen(
     currentServerUrl: String = "",
     currentApiKey: String = "",
     errorMessage: String? = null,
+    successMessage: String? = null,
     isLoading: Boolean = false,
+    showBackButton: Boolean = true,
     onSave: (serverUrl: String, apiKey: String) -> Unit,
     onBack: () -> Unit,
     onTestConnection: (() -> Unit)? = null
@@ -40,15 +48,32 @@ fun SettingsScreen(
         }
     }
 
+    // Reset saveSuccess when successMessage appears
+    LaunchedEffect(successMessage) {
+        if (successMessage != null) {
+            saveSuccess = false
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("API Settings") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Text("←")
+                    if (showBackButton) {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = TailwindBlue,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
             )
         }
     ) { padding ->
@@ -132,7 +157,34 @@ fun SettingsScreen(
                 }
             }
 
-            if (saveSuccess && errorMessage == null) {
+            // Success message display
+            successMessage?.let { success ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "✓ Success",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = success,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
+            }
+
+            // Settings saved confirmation (separate from connection test)
+            if (saveSuccess && errorMessage == null && successMessage == null) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(

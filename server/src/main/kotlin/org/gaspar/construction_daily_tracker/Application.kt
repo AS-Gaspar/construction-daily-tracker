@@ -177,6 +177,6 @@ fun Application.module() {
         roleRoutes(roleRepo)
         employeeRoutes(employeeRepo)
         dayAdjustmentRoutes(adjustmentRepo, payrollRepo, employeeRepo)
-        monthlyPayrollRoutes(payrollRepo, employeeRepo)
+        monthlyPayrollRoutes(payrollRepo, employeeRepo, adjustmentRepo)
     }
 }

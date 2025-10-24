@@ -137,6 +137,7 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
+            successMessage = null
             try {
                 println("   Creating HTTP client...")
                 val testClient = ApiClient.create(serverUrl, apiKey)
@@ -148,7 +149,7 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
 
                 println("✅ CONNECTION TEST SUCCESSFUL!")
                 println("   Received ${works.size} works from server")
-                errorMessage = "✅ Connection successful!\n\nReceived ${works.size} works from server.\n\nYou can now use the app."
+                successMessage = "Connection successful!\n\nReceived ${works.size} works from server.\n\nYou can now use the app."
             } catch (e: Exception) {
                 println("❌ CONNECTION TEST FAILED!")
                 println("   Error type: ${e::class.simpleName}")
@@ -402,6 +403,37 @@ class AppViewModel(private val credentialStorage: CredentialStorage) : ViewModel
             } catch (e: Exception) {
                 errorMessage = "Failed to create adjustment: ${e.message}"
                 println("API connection error in createAdjustment: ${e.stackTraceToString()}")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun createDayAdjustment(
+        employeeId: Int,
+        date: String,
+        adjustmentValue: String,
+        notes: String
+    ) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            successMessage = null
+            try {
+                dayAdjustmentRepository?.createAdjustment(
+                    employeeId,
+                    date,
+                    adjustmentValue,
+                    notes.ifBlank { null }
+                )
+                dayAdjustments = dayAdjustmentRepository?.getAllAdjustments() ?: emptyList()
+                // Also refresh payrolls as they auto-update
+                payrolls = payrollRepository?.getAllPayrolls() ?: emptyList()
+                successMessage = "Adjustment added successfully!"
+                navigationState.navigateBack()
+            } catch (e: Exception) {
+                errorMessage = "Failed to create adjustment: ${e.message}"
+                println("API connection error in createDayAdjustment: ${e.stackTraceToString()}")
             } finally {
                 isLoading = false
             }

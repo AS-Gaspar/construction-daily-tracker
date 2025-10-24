@@ -31,4 +31,7 @@ sealed class Screen(val route: String, val title: String) {
         val periodStartDate: String,
         val periodEndDate: String
     ) : Screen("payroll/$periodStartDate/$periodEndDate", "Payroll Details")
+
+    data class DayAdjustmentForm(val employeeId: Int) :
+        Screen("adjustment/new/$employeeId", "Add Adjustment")
 }

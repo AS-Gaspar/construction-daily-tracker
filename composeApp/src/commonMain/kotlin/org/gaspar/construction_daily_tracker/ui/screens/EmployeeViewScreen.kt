@@ -44,6 +44,7 @@ fun EmployeeViewScreen(
     onBack: () -> Unit,
     onEdit: (Employee) -> Unit,
     onDelete: (Employee) -> Unit,
+    onAddAdjustment: ((Int) -> Unit)? = null,
     onAssignToWork: ((Int, Int) -> Unit)? = null,
     onClearSuccessMessage: (() -> Unit)? = null
 ) {
@@ -134,6 +135,20 @@ fun EmployeeViewScreen(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit Employee"
                         )
+                    }
+
+                    // Add Adjustment button (purple)
+                    if (onAddAdjustment != null) {
+                        FloatingActionButton(
+                            onClick = { onAddAdjustment(employee.id) },
+                            containerColor = Color(0xFF9333EA), // Tailwind purple-600
+                            contentColor = Color.White
+                        ) {
+                            Text(
+                                text = "📊",
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
                     }
 
                     // Assign to Work button (green) - only show if employee has no work
