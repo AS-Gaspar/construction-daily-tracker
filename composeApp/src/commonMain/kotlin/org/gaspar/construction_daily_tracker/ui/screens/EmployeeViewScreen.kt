@@ -114,18 +114,20 @@ fun EmployeeViewScreen(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Delete button (red)
-                    FloatingActionButton(
-                        onClick = { showDeleteDialog = true },
-                        containerColor = TailwindRed,
-                        contentColor = Color.White
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Employee"
-                        )
-                    }
 
+                    // Add Adjustment button (green)
+                    if (onAddAdjustment != null) {
+                        FloatingActionButton(
+                            onClick = { onAddAdjustment(employee.id) },
+                            containerColor = Color(0xFF22C55E), // Tailwind green-600
+                            contentColor = Color.White
+                        ) {
+                            Text(
+                                text = "✚",
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+                    }
                     // Edit button (amber/yellow)
                     FloatingActionButton(
                         onClick = { onEdit(employee) },
@@ -138,18 +140,16 @@ fun EmployeeViewScreen(
                         )
                     }
 
-                    // Add Adjustment button (purple)
-                    if (onAddAdjustment != null) {
-                        FloatingActionButton(
-                            onClick = { onAddAdjustment(employee.id) },
-                            containerColor = Color(0xFF9333EA), // Tailwind purple-600
-                            contentColor = Color.White
-                        ) {
-                            Text(
-                                text = "📊",
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
+                    // Delete button (red)
+                    FloatingActionButton(
+                        onClick = { showDeleteDialog = true },
+                        containerColor = TailwindRed,
+                        contentColor = Color.White
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Employee"
+                        )
                     }
 
                     // Assign to Work button (green) - only show if employee has no work
@@ -338,6 +338,13 @@ fun EmployeeViewScreen(
                             }
                         }
 
+                        // Adjustments History Table
+                        AdjustmentsHistoryTable(
+                            strings = strings,
+                            employeeId = employee.id,
+                            adjustments = adjustments
+                        )
+
                         // Spacer for FAB
                         Spacer(modifier = Modifier.height(80.dp))
                     }
@@ -471,5 +478,145 @@ private fun DetailRow(
                 fontWeight = FontWeight.SemiBold
             )
         }
+    }
+}
+
+@Composable
+private fun AdjustmentsHistoryTable(
+    strings: org.gaspar.construction_daily_tracker.i18n.Strings,
+    employeeId: Int,
+    adjustments: List<DayAdjustment>
+) {
+    var selectedNote by remember { mutableStateOf<String?>(null) }
+
+    // Filter adjustments for this employee and sort by date (most recent first)
+    val employeeAdjustments = remember(adjustments, employeeId) {
+        adjustments
+            .filter { it.employeeId == employeeId }
+            .sortedByDescending { it.date }
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = strings.adjustmentsHistory,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+
+            HorizontalDivider()
+
+            if (employeeAdjustments.isEmpty()) {
+                Text(
+                    text = strings.noAdjustments,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                )
+            } else {
+                // Table Header
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = strings.date,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = strings.value,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = strings.note,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                HorizontalDivider()
+
+                // Table Rows
+                employeeAdjustments.forEach { adjustment ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Date
+                        Text(
+                            text = adjustment.date,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        // Value
+                        Text(
+                            text = adjustment.adjustmentValue,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (adjustment.adjustmentValue.startsWith("-"))
+                                TailwindRed
+                            else
+                                Color(0xFF16A34A), // Tailwind green
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        // Note Button
+                        Button(
+                            onClick = {
+                                selectedNote = adjustment.notes ?: strings.noNoteAvailable
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = TailwindBlue
+                            ),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                        ) {
+                            Text(
+                                text = strings.viewNote,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+
+                    if (adjustment != employeeAdjustments.last()) {
+                        HorizontalDivider()
+                    }
+                }
+            }
+        }
+    }
+
+    // Note Dialog
+    if (selectedNote != null) {
+        AlertDialog(
+            onDismissRequest = { selectedNote = null },
+            title = { Text(strings.noteDialogTitle) },
+            text = {
+                Text(
+                    text = selectedNote ?: strings.noNoteAvailable,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { selectedNote = null }) {
+                    Text(strings.ok)
+                }
+            }
+        )
     }
 }

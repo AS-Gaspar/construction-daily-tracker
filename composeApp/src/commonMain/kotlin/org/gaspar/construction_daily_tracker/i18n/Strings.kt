@@ -122,6 +122,14 @@ interface Strings {
     val pleaseSelectDate: String
     val pleaseSelectValue: String
     val adjustmentAdded: String
+    val adjustmentsHistory: String
+    val date: String
+    val value: String
+    val note: String
+    val viewNote: String
+    val noAdjustments: String
+    val noteDialogTitle: String
+    val noNoteAvailable: String
 
     // Adjustment values
     val fullDayWork: String
@@ -326,6 +334,14 @@ class EnglishStrings : Strings {
     override val pleaseSelectDate = "Please select a date"
     override val pleaseSelectValue = "Please select an adjustment value"
     override val adjustmentAdded = "Adjustment added successfully!"
+    override val adjustmentsHistory = "Adjustments History"
+    override val date = "Date"
+    override val value = "Value"
+    override val note = "Note"
+    override val viewNote = "View Note"
+    override val noAdjustments = "No adjustments found"
+    override val noteDialogTitle = "Adjustment Note"
+    override val noNoteAvailable = "No note available"
 
     override val fullDayWork = "+1.0 days (e.g., Saturday work)"
     override val halfDayWork = "+0.5 days (e.g., half-day work)"
@@ -523,6 +539,14 @@ class PortugueseStrings : Strings {
     override val pleaseSelectDate = "Por favor, selecione uma data"
     override val pleaseSelectValue = "Por favor, selecione um valor de ajuste"
     override val adjustmentAdded = "Ajuste adicionado com sucesso!"
+    override val adjustmentsHistory = "Histórico de Ajustes"
+    override val date = "Data"
+    override val value = "Valor"
+    override val note = "Nota"
+    override val viewNote = "Ver Nota"
+    override val noAdjustments = "Nenhum ajuste encontrado"
+    override val noteDialogTitle = "Nota do Ajuste"
+    override val noNoteAvailable = "Nenhuma nota disponível"
 
     override val fullDayWork = "+1.0 dias (ex: trabalho no sábado)"
     override val halfDayWork = "+0.5 dias (ex: meio período de trabalho)"
