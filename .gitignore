@@ -17,6 +17,7 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 CLAUDE.md
+.claude
 
 # Environment files with secrets
 .env

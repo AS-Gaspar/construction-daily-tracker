@@ -1,14 +1,14 @@
 This is a Kotlin Multiplatform project targeting Android, Server.
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
+* [/composeApp](../composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
   It contains several subfolders:
-    - [commonMain](./composeApp/src/commonMain/kotlin) is for code that's common for all targets.
-    - [androidMain](./composeApp/src/androidMain/kotlin) is for Android-specific code.
+    - [commonMain](../composeApp/src/commonMain/kotlin) is for code that's common for all targets.
+    - [androidMain](../composeApp/src/androidMain/kotlin) is for Android-specific code.
 
-* [/server](./server/src/main/kotlin) is for the Ktor server application.
+* [/server](../server/src/main/kotlin) is for the Ktor server application.
 
-* [/shared](./shared/src) is for the code that will be shared between all targets in the project.
-  The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
+* [/shared](../shared/src) is for the code that will be shared between all targets in the project.
+  The most important subfolder is [commonMain](../shared/src/commonMain/kotlin). If preferred, you
   can add code to the platform-specific folders here too.
 
 ### Build and Run Android Application
