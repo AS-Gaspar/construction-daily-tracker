@@ -232,8 +232,7 @@ serverUrl = "http://192.168.1.100:8080"  // Use computer's local IP
 ```
 
 Find your computer's IP:
-- **Windows**: `ipconfig` (look for IPv4 Address)
-- **macOS/Linux**: `ifconfig` or `ip addr` (look for inet)
+- **Linux**: `ifconfig` or `ip addr` (look for inet)
 
 ### Production
 ```kotlin
