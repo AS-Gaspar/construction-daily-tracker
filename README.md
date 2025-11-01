@@ -10,7 +10,7 @@
 
 ## 📖 Sobre o Projeto
 
-Gerenciar a folha de pagamento na construção civil é complexo—especialmente quando você precisa rastrear ajustes diários, calcular dias úteis com precisão e lidar com períodos de pagamento únicos do setor (do dia 6 ao dia 5). O **Construction Daily Tracker** resolve esses desafios com uma solução poderosa e multiplataforma que funciona em Android e ambientes servidor.
+Gerenciar a folha de pagamento na construção civil é complicado, especialmente quando você precisa cuidar de diversar obras e calcular dias trabalhados com precisão. O **Construction Daily Tracker** resolve esses desafios com uma solução personalizada.
 
 Seja gerenciando uma pequena equipe ou supervisionando múltiplas obras, este app ajuda você a:
 
@@ -63,7 +63,7 @@ Seja gerenciando uma pequena equipe ou supervisionando múltiplas obras, este ap
 
 ```bash
 # Clone o repositório
-git clone <url-do-seu-repo>
+git clone https://github.com/AS-Gaspar/construction-daily-tracker/
 cd construction-daily-tracker
 
 # Configure variáveis de ambiente (opcional)
@@ -146,13 +146,13 @@ construction-daily-tracker/
 ## 💼 Conceitos Fundamentais
 
 ### Período de Folha de Pagamento
-A folha mensal vai do **dia 6 de um mês até o dia 5 do mês seguinte**—não segue o mês calendário padrão. Isso se alinha com práticas comuns da indústria da construção civil.
+A folha mensal vai do **dia 6 de um mês até o dia 5 do mês seguinte**
 
 ### Ajustes Diários
 Rastreie modificações diárias no cronograma de trabalho de um funcionário:
-- `+1.0` para hora extra no sábado
+- `+1.0` para diária extra de sábado
 - `-0.5` para falta de meio período
-- `+0.5` para bonificação de meio período
+- `+0.5` para extra de meio período
 - Qualquer valor de ajuste personalizado
 
 ### Recálculo Automático
