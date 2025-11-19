@@ -1,16 +1,16 @@
 # 🏗️ Construction Daily Tracker
 
-> Uma solução moderna e completa para gestão de folha de pagamento na construção civil, desenvolvida com Kotlin Multiplatform
+> Uma solução moderna e completa para gestão de folha de pagamento na construção civil, desenvolvida com Kotlin Multiplatform e funcionando 100% offline
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.20-blue.svg)](https://kotlinlang.org)
-[![Ktor](https://img.shields.io/badge/Ktor-3.3.0-orange.svg)](https://ktor.io)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.0-blue.svg)](https://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose-1.9.0-green.svg)](https://www.jetbrains.com/lp/compose-multiplatform/)
+[![Room](https://img.shields.io/badge/Room-2.6.1-orange.svg)](https://developer.android.com/training/data-storage/room)
 
 ---
 
 ## 📖 Sobre o Projeto
 
-Gerenciar a folha de pagamento na construção civil é complicado, especialmente quando você precisa cuidar de diversar obras e calcular dias trabalhados com precisão. O **Construction Daily Tracker** resolve esses desafios com uma solução personalizada.
+Gerenciar a folha de pagamento na construção civil é complicado, especialmente quando você precisa cuidar de diversas obras e calcular dias trabalhados com precisão. O **Construction Daily Tracker** resolve esses desafios com uma solução local e offline.
 
 Seja gerenciando uma pequena equipe ou supervisionando múltiplas obras, este app ajuda você a:
 
@@ -19,6 +19,7 @@ Seja gerenciando uma pequena equipe ou supervisionando múltiplas obras, este ap
 ✅ Calcular automaticamente a folha de pagamento com precisão
 ✅ Gerar relatórios mensais do dia 6 ao dia 5
 ✅ Manter um histórico completo de todas as alterações
+✅ **Funcionar 100% offline - todos os dados ficam no seu celular**
 
 ---
 
@@ -30,17 +31,18 @@ Seja gerenciando uma pequena equipe ou supervisionando múltiplas obras, este ap
 - **Atualizações em tempo real** quando ajustes são adicionados ou removidos
 - **Precisão financeira** com BigDecimal para valores monetários
 
-### 📱 Arquitetura Multiplataforma
-- **App Android** construído com Compose Multiplatform
-- **API REST** backend desenvolvida com Ktor
-- **Lógica de negócio compartilhada** entre todas as plataformas
-- **Modelos type-safe** com Kotlin Serialization
+### 📱 Aplicativo Local e Offline
+- **Banco de dados local** com Room/SQLite
+- **Sem necessidade de internet** - funciona completamente offline
+- **Dados seguros** armazenados no dispositivo
+- **Interface moderna** construída com Compose Multiplatform
+- **Lógica de negócio compartilhada** entre plataformas
 
-### 🔐 Seguro & Confiável
-- **Autenticação por API key** para todos os endpoints
-- **Migrações de banco de dados** com Flyway
-- **Segurança transacional** com PostgreSQL
-- **Cobertura abrangente de testes** seguindo princípios TDD
+### 🔐 Seguro & Privado
+- **Dados locais** - tudo fica no seu dispositivo
+- **Armazenamento criptografado** para preferências sensíveis
+- **Sem envio de dados** para servidores externos
+- **Cobertura de testes** seguindo princípios TDD
 
 ### 🏗️ Gestão Multi-Obras
 - Rastreie múltiplas obras simultaneamente
@@ -54,37 +56,32 @@ Seja gerenciando uma pequena equipe ou supervisionando múltiplas obras, este ap
 
 ### Pré-requisitos
 
-- **Java 11** ou superior
-- **PostgreSQL** (para produção)
-- **Android Studio** (para desenvolvimento mobile)
-- **Gradle** 8.x (wrapper incluído)
+- **Android Studio** (versão mais recente)
+- **JDK 11** ou superior
+- **Dispositivo Android** ou emulador (API 24+)
 
-### 🖥️ Executar o Servidor
+### 📱 Instalar o App
+
+#### Opção 1: Baixar APK Pré-compilado
+1. Navegue até `composeApp/build/outputs/apk/debug/`
+2. Transfira `composeApp-debug.apk` para seu dispositivo
+3. Habilite "Instalar de fontes desconhecidas" nas configurações
+4. Instale o APK
+
+#### Opção 2: Compilar do Código-Fonte
 
 ```bash
 # Clone o repositório
-git clone https://github.com/AS-Gaspar/construction-daily-tracker/
+git clone https://github.com/seu-usuario/construction-daily-tracker/
 cd construction-daily-tracker
 
-# Configure variáveis de ambiente (opcional)
-export DB_URL=jdbc:postgresql://localhost:5432/construction_tracker
-export DB_USER=postgres
-export DB_PASSWORD=postgres
-export API_KEY=sua-chave-api-segura
-
-# Execute o servidor
-./gradlew :server:run
-```
-
-A API estará disponível em `http://localhost:8080`
-
-### 📱 Compilar o App Android
-
-```bash
-# Compilar APK de debug
+# Compile o APK de debug
 ./gradlew :composeApp:assembleDebug
 
-# APK estará em: composeApp/build/outputs/apk/debug/
+# APK estará em: composeApp/build/outputs/apk/debug/composeApp-debug.apk
+
+# Instalar via ADB (opcional)
+adb install composeApp/build/outputs/apk/debug/composeApp-debug.apk
 ```
 
 ### 🧪 Executar Testes
@@ -93,52 +90,44 @@ A API estará disponível em `http://localhost:8080`
 # Executar todos os testes
 ./gradlew test
 
-# Executar apenas testes do servidor
-./gradlew :server:test
+# Executar apenas testes do shared
+./gradlew :shared:test
 
 # Executar com saída detalhada
 ./gradlew test --info
 ```
 
-Visualize relatórios detalhados em: `server/build/reports/tests/test/index.html`
-
 ---
 
 ## 🏛️ Arquitetura
 
-Este projeto segue uma **arquitetura limpa e modular** projetada para escalabilidade e manutenibilidade:
+Este projeto segue uma **arquitetura limpa e modular** com armazenamento local:
 
 ```
 construction-daily-tracker/
 ├── shared/              # Lógica de negócio agnóstica de plataforma
 │   ├── models/          # Modelos de dados (@Serializable)
 │   └── utils/           # WorkDaysCalculator, helpers
-├── server/              # Backend Ktor (REST API)
-│   ├── routes/          # Endpoints da API
-│   ├── repository/      # Camada de acesso a dados
-│   └── database/        # Tabelas, migrações
-└── composeApp/          # UI Android (Compose)
+└── composeApp/          # Aplicativo Android
     ├── commonMain/      # Código de UI compartilhado
     └── androidMain/     # Código específico do Android
+        ├── database/    # Room database (entities, DAOs)
+        ├── repository/  # Repositórios locais
+        └── ui/          # Telas e componentes
 ```
 
 ### Stack Tecnológica
 
-**Backend:**
-- **Ktor 3.3.0** - Framework web assíncrono moderno
-- **Exposed ORM** - Framework SQL type-safe
-- **PostgreSQL** - Banco de dados de produção
-- **H2** - Banco de dados em memória para testes
-- **Flyway** - Migrações de banco de dados
-- **HikariCP** - Pool de conexões
-
-**Frontend:**
-- **Compose Multiplatform** - UI declarativa
+**Android:**
+- **Compose Multiplatform** - UI declarativa moderna
+- **Room Database** - Persistência local type-safe
+- **SQLite** - Banco de dados embarcado
 - **Kotlin Coroutines** - Operações assíncronas
-- **Ktor Client** - Networking HTTP
+- **ViewModel** - Gerenciamento de estado
+- **EncryptedSharedPreferences** - Armazenamento seguro de preferências
 
 **Compartilhado:**
-- **Kotlin Serialization** - JSON type-safe
+- **Kotlin Serialization** - Serialização de dados
 - **Kotlin Multiplatform** - Compartilhamento de código
 
 ---
@@ -166,47 +155,72 @@ Usa manipulação de datas específica da plataforma para calcular dias úteis (
 
 ---
 
-## 📚 Documentação da API
+## 💾 Estrutura do Banco de Dados
 
-Todos os endpoints requerem o header `X-API-Key` (exceto a raiz `/`).
+### Tabelas Principais
 
-### 🏢 Works (Obras)
-```http
-GET    /works           # Listar todas as obras
-POST   /works           # Criar nova obra
-GET    /works/:id       # Obter detalhes da obra
-PUT    /works/:id       # Atualizar obra
-DELETE /works/:id       # Deletar obra
+#### Works (Obras)
+```kotlin
+@Entity(tableName = "works")
+data class WorkEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val name: String
+)
 ```
 
-### 👷 Employees (Funcionários)
-```http
-GET    /employees                    # Listar todos os funcionários
-POST   /employees                    # Criar funcionário
-GET    /employees/:id                # Obter detalhes do funcionário
-PUT    /employees/:id                # Atualizar funcionário
-DELETE /employees/:id                # Deletar funcionário
-GET    /employees/work/:workId       # Obter funcionários por obra
+#### Roles (Funções)
+```kotlin
+@Entity(tableName = "roles")
+data class RoleEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val title: String
+)
 ```
 
-### 📅 Day Adjustments (Ajustes Diários)
-```http
-GET    /day-adjustments                         # Listar todos os ajustes
-POST   /day-adjustments                         # Criar ajuste
-GET    /day-adjustments/:id                     # Obter ajuste
-DELETE /day-adjustments/:id                     # Deletar ajuste
-GET    /day-adjustments/employee/:employeeId    # Obter por funcionário
+#### Employees (Funcionários)
+```kotlin
+@Entity(tableName = "employees")
+data class EmployeeEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val name: String,
+    val surname: String,
+    val roleId: Int,
+    val workId: Int? = null,
+    val dailyValue: String
+)
 ```
 
-### 💰 Monthly Payrolls (Folhas Mensais)
-```http
-GET    /monthly-payrolls                    # Listar todas as folhas
-POST   /monthly-payrolls                    # Gerar folha de pagamento
-GET    /monthly-payrolls/:id                # Obter detalhes da folha
-GET    /monthly-payrolls/employee/:id       # Obter folhas do funcionário
+#### Day Adjustments (Ajustes Diários)
+```kotlin
+@Entity(tableName = "day_adjustments")
+data class DayAdjustmentEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val employeeId: Int,
+    val date: String,
+    val adjustmentValue: String,
+    val notes: String? = null
+)
 ```
 
-Para exemplos completos da API, consulte `ANDROID_API_SETUP.md`.
+#### Monthly Payrolls (Folhas Mensais)
+```kotlin
+@Entity(tableName = "monthly_payrolls")
+data class MonthlyPayrollEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val employeeId: Int,
+    val periodStartDate: String,
+    val periodEndDate: String,
+    val baseWorkdays: String,
+    val finalWorkedDays: String,
+    val totalPayment: String,
+    val closedAt: Long? = null
+)
+```
 
 ---
 
@@ -223,56 +237,20 @@ Este projeto segue **Test-Driven Development (TDD)**:
 **Cobertura de Testes:**
 - **Testes unitários** para lógica de negócio (`WorkDaysCalculator`)
 - **Testes de repositório** para camada de acesso a dados
-- **Testes de integração** para rotas da API
-- **Testes end-to-end** para fluxos completos
-
-Consulte `TESTING.md` para documentação completa sobre testes.
+- **Testes de integração** para fluxos de UI
 
 ---
 
-## 🔐 Segurança
+## 🔐 Segurança e Privacidade
 
-### Autenticação por API Key
-Todos os endpoints da API são protegidos com autenticação por chave estática:
+### Armazenamento Local Seguro
+Todos os dados são armazenados localmente no dispositivo:
 
-```bash
-# Defina sua API key
-export API_KEY="sua-chave-de-producao-aqui"
-
-# Inclua em todas as requisições
-curl -H "X-API-Key: sua-chave-de-producao-aqui" http://localhost:8080/works
-```
-
-**Melhores Práticas de Segurança:**
-- ✅ Altere a API key padrão antes da produção
-- ✅ Armazene chaves com segurança (EncryptedSharedPreferences no Android)
-- ✅ Use HTTPS em produção
-- ✅ Rotacione chaves periodicamente
-
-Consulte `auth/ApiKeyAuth.kt` para detalhes de implementação.
-
----
-
-## 🤝 Como Contribuir
-
-Contribuições são bem-vindas! Veja como começar:
-
-1. **Faça um fork do repositório**
-2. **Crie uma branch de feature**: `git checkout -b feature/funcionalidade-incrivel`
-3. **Escreva os testes primeiro** (abordagem TDD)
-4. **Implemente sua funcionalidade**
-5. **Execute os testes**: `./gradlew test`
-6. **Commit suas alterações**: `git commit -m 'Adiciona funcionalidade incrível'`
-7. **Faça push para a branch**: `git push origin feature/funcionalidade-incrivel`
-8. **Abra um Pull Request**
-
-### Diretrizes de Desenvolvimento
-
-- Siga os princípios TDD—testes antes da implementação
-- Use mensagens de commit significativas
-- Mantenha as funções pequenas e focadas
-- Documente lógica de negócio complexa
-- Atualize `CLAUDE.md` para mudanças arquiteturais
+✅ **Dados privados** - nunca saem do seu celular
+✅ **EncryptedSharedPreferences** para configurações sensíveis
+✅ **Room Database** com SQLite para dados estruturados
+✅ **Sem conexão com internet** necessária
+✅ **Controle total** sobre seus dados
 
 ---
 
@@ -280,22 +258,29 @@ Contribuições são bem-vindas! Veja como começar:
 
 ```
 construction-daily-tracker/
-├── CLAUDE.md                    # Diretrizes para assistente IA
+├── README.md                    # Este arquivo
 ├── TESTING.md                   # Documentação de testes
-├── ANDROID_API_SETUP.md         # Guia de configuração Android
 ├── gradle/                      # Configuração Gradle
 ├── shared/                      # Lógica de negócio compartilhada
 │   ├── src/commonMain/         # Código agnóstico de plataforma
 │   ├── src/jvmMain/            # Implementações específicas JVM
 │   └── src/commonTest/         # Testes compartilhados
-├── server/                      # Backend Ktor
-│   ├── src/main/kotlin/        # Implementação do servidor
-│   ├── src/main/resources/     # Configurações, migrações
-│   └── src/test/kotlin/        # Testes do servidor
 └── composeApp/                  # Aplicação Android
     ├── src/commonMain/         # UI compartilhada
-    └── src/androidMain/        # UI específica do Android
+    └── src/androidMain/        # Implementação Android
+        ├── database/           # Room database
+        ├── repository/         # Repositórios locais
+        └── ui/                 # Interface do usuário
 ```
+
+---
+
+## 📱 Requisitos do Sistema
+
+- **Android 7.0 (API 24)** ou superior
+- **50 MB** de espaço livre
+- **Resolução mínima:** 320x480
+- **Sem necessidade de internet**
 
 ---
 
@@ -309,9 +294,9 @@ Este projeto está licenciado sob a Licença MIT - consulte o arquivo LICENSE pa
 
 Construído com ❤️ usando:
 - [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html)
-- [Ktor](https://ktor.io/)
 - [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
-- [Exposed ORM](https://github.com/JetBrains/Exposed)
+- [Room Database](https://developer.android.com/training/data-storage/room)
+- [Android Jetpack](https://developer.android.com/jetpack)
 
 ---
 
@@ -319,9 +304,8 @@ Construído com ❤️ usando:
 
 Tem dúvidas ou precisa de ajuda?
 
-- 📖 Leia o [CLAUDE.md](CLAUDE.md) para diretrizes de desenvolvimento
+- 📖 Leia este README para instruções completas
 - 🧪 Confira [TESTING.md](TESTING.md) para documentação de testes
-- 📱 Veja [ANDROID_API_SETUP.md](ANDROID_API_SETUP.md) para configuração mobile
 - 🐛 [Abra uma issue](https://github.com/seu-usuario/construction-daily-tracker/issues)
 
 ---
@@ -329,6 +313,8 @@ Tem dúvidas ou precisa de ajuda?
 <div align="center">
 
 **Feito com Kotlin Multiplatform** 🚀
+
+**Funciona 100% Offline** 📱
 
 Se este projeto te ajudou, dê uma ⭐!
 
