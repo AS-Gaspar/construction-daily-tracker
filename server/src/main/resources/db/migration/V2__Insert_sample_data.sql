@@ -1,10 +1,116 @@
--- Sample Works
-INSERT INTO works (name) VALUES ('Main Street Tower');
+-- 10 Obras
+INSERT INTO works (name) VALUES
+('Firenze Residence'),
+('DiCapri Residence'),
+('Amoreira MD'),
+('Germinado Elisandra Ricardo'),
+('Costa Dominicana'),
+('Dressler Residence'),
+('Residencial Jardim das Flores'),
+('Alva'),
+('Costa do Pacífico'),
+('Centro Empresarial Atlântico');
 
--- Sample Roles
-INSERT INTO roles (title) VALUES ('Mason'), ('Electrician');
+-- 6 Funções
+INSERT INTO roles (title) VALUES
+('Pedreiro'),
+('Eletricista'),
+('Encanador'),
+('Servente'),
+('Mestre de Obras'),
+('Carpinteiro');
 
--- Sample Employees
+-- 30 Funcionários
 INSERT INTO employees (name, surname, role_id, work_id, daily_value) VALUES
-('John', 'Doe', 1, 1, 150.00),
-('Jane', 'Smith', 2, 1, 180.50);
+('Carlos', 'Silva', 1, 1, 180.00),
+('José', 'Santos', 2, 1, 200.00),
+('Mariano', 'Oliveira', 4, 1, 120.00),
+('João', 'Souza', 1, 2, 185.00),
+('Pedro', 'Lima', 3, 2, 190.00),
+('Amauri', 'Costa', 4, 2, 115.00),
+('Francisco', 'Rodrigues', 5, 3, 350.00),
+('Paulo', 'Almeida', 1, 3, 175.00),
+('Lucas', 'Pereira', 2, 3, 195.00),
+('Marcos', 'Ferreira', 6, 4, 210.00),
+('Antonio', 'Gomes', 1, 4, 180.00),
+('Fernando', 'Martins', 4, 4, 125.00),
+('Roberto', 'Barbosa', 2, 5, 205.00),
+('Rafael', 'Ribeiro', 3, 5, 188.00),
+('Bruno', 'Carvalho', 1, 5, 182.00),
+('Thiago', 'Araújo', 4, 6, 118.00),
+('Gabriel', 'Dias', 5, 6, 360.00),
+('Gustavo', 'Castro', 6, 6, 215.00),
+('Leonardo', 'Nascimento', 1, 7, 178.00),
+('Felipe', 'Moreira', 2, 7, 198.00),
+('André', 'Teixeira', 3, 7, 192.00),
+('Rodrigo', 'Cardoso', 4, 8, 122.00),
+('Diego', 'Lopes', 1, 8, 183.00),
+('Marcelo', 'Monteiro', 5, 8, 345.00),
+('Julio', 'Rocha', 6, 9, 208.00),
+('Cesar', 'Mendes', 1, 9, 177.00),
+('Renato', 'Freitas', 2, 9, 202.00),
+('Rodrigo', 'Cunha', 4, 10, 120.00),
+('Juliano', 'Pinto', 3, 10, 185.00),
+('Edvaldo', 'Rezende', 2, 10, 197.00);
+
+-- 50 Ajustes Diários
+INSERT INTO day_adjustments (employee_id, date, adjustment_value, notes) VALUES
+-- Ajustes de horas extras (positivos)
+(1, '2025-10-15', 1.0, 'Trabalhou sábado - hora extra'),
+(2, '2025-10-15', 1.0, 'Trabalhou sábado - hora extra'),
+(5, '2025-10-22', 1.0, 'Trabalhou sábado - hora extra'),
+(8, '2025-10-22', 1.0, 'Trabalhou sábado - hora extra'),
+(10, '2025-10-29', 1.0, 'Trabalhou sábado - hora extra'),
+(12, '2025-10-08', 0.5, 'Meio período extra'),
+(15, '2025-10-12', 0.5, 'Meio período extra'),
+(18, '2025-10-19', 0.5, 'Meio período extra'),
+(20, '2025-10-26', 0.5, 'Meio período extra'),
+(25, '2025-10-05', 1.0, 'Trabalhou sábado - hora extra'),
+-- Ajustes de faltas (negativos)
+(3, '2025-10-10', -1.0, 'Falta justificada - atestado médico'),
+(6, '2025-10-14', -1.0, 'Falta não justificada'),
+(9, '2025-10-18', -1.0, 'Falta justificada - problemas familiares'),
+(11, '2025-10-20', -0.5, 'Saiu mais cedo - consulta médica'),
+(14, '2025-10-24', -1.0, 'Falta não justificada'),
+(16, '2025-10-28', -0.5, 'Chegou atrasado'),
+(19, '2025-10-11', -1.0, 'Falta justificada - atestado médico'),
+(22, '2025-10-16', -0.5, 'Saiu mais cedo'),
+(24, '2025-10-21', -1.0, 'Falta não justificada'),
+(28, '2025-10-25', -0.5, 'Chegou atrasado'),
+-- Mais ajustes variados
+(4, '2025-10-13', 1.0, 'Trabalhou domingo - urgência na obra'),
+(7, '2025-10-15', 1.0, 'Trabalhou sábado - hora extra'),
+(13, '2025-10-17', -1.0, 'Falta justificada'),
+(17, '2025-10-19', 0.5, 'Meio período extra'),
+(21, '2025-10-22', 1.0, 'Trabalhou sábado - hora extra'),
+(23, '2025-10-23', -0.5, 'Saiu mais cedo'),
+(26, '2025-10-26', 1.0, 'Trabalhou sábado - hora extra'),
+(27, '2025-10-27', -1.0, 'Falta não justificada'),
+(29, '2025-10-29', 0.5, 'Meio período extra'),
+(30, '2025-10-30', 1.0, 'Trabalhou sábado - hora extra'),
+(1, '2025-10-22', 1.0, 'Trabalhou sábado - hora extra'),
+(2, '2025-10-09', -1.0, 'Falta justificada'),
+(5, '2025-10-13', 0.5, 'Meio período extra'),
+(8, '2025-10-16', -0.5, 'Saiu mais cedo'),
+(10, '2025-10-20', 1.0, 'Trabalhou sábado - hora extra'),
+(12, '2025-10-23', -1.0, 'Falta não justificada'),
+(15, '2025-10-27', 1.0, 'Trabalhou sábado - hora extra'),
+(18, '2025-10-11', -0.5, 'Chegou atrasado'),
+(20, '2025-10-14', 1.0, 'Trabalhou sábado - hora extra'),
+(25, '2025-10-18', -1.0, 'Falta justificada - atestado médico'),
+(3, '2025-10-21', 0.5, 'Meio período extra'),
+(6, '2025-10-24', 1.0, 'Trabalhou sábado - hora extra'),
+(9, '2025-10-28', -0.5, 'Saiu mais cedo'),
+(11, '2025-10-07', 1.0, 'Trabalhou sábado - hora extra'),
+(14, '2025-10-12', -1.0, 'Falta não justificada'),
+(16, '2025-10-17', 0.5, 'Meio período extra'),
+(19, '2025-10-25', 1.0, 'Trabalhou sábado - hora extra'),
+(22, '2025-10-30', -1.0, 'Falta justificada'),
+(24, '2025-10-08', 1.0, 'Trabalhou sábado - hora extra'),
+(28, '2025-10-15', -0.5, 'Chegou atrasado');
+
+-- 3 Folhas de Pagamento Mensais (diferentes períodos)
+INSERT INTO monthly_payrolls (employee_id, period_start_date, period_end_date, base_workdays, final_worked_days, total_payment, closed_at) VALUES
+(1, '2025-07-06', '2025-08-05', 22.0, 24.0, 4320.00, 1722902400000),
+(5, '2025-08-06', '2025-09-05', 21.0, 22.5, 4275.00, 1725580800000),
+(10, '2025-09-06', '2025-10-05', 22.0, 23.0, 4830.00, 1728172800000);
