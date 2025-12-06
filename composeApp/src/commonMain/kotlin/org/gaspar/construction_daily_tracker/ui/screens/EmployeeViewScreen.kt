@@ -160,14 +160,16 @@ fun EmployeeViewScreen(
                                 ) {
                                     Text(
                                         text = "👷",
-                                        style = MaterialTheme.typography.displayLarge
+                                        style = MaterialTheme.typography.displayLarge,
+                                        maxLines = 1
                                     )
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Text(
                                         text = "${employee.name}" + if (employee.surname.isNotEmpty()) " (${employee.surname})" else "",
                                         style = MaterialTheme.typography.headlineMedium,
                                         fontWeight = FontWeight.Bold,
-                                        color = TailwindBlue
+                                        color = TailwindBlue,
+                                        maxLines = 2
                                     )
                                 }
 
@@ -575,19 +577,22 @@ private fun DetailRow(
     ) {
         Text(
             text = icon,
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineSmall,
+            maxLines = 1
         )
         Spacer(modifier = Modifier.width(12.dp))
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1
             )
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2
             )
         }
     }

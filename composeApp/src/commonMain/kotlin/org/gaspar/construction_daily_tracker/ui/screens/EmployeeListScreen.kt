@@ -188,7 +188,8 @@ fun EmployeeCard(
             Text(
                 text = "👷",
                 style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(end = 16.dp)
+                modifier = Modifier.padding(end = 16.dp),
+                maxLines = 1
             )
 
             // Employee info
@@ -199,7 +200,8 @@ fun EmployeeCard(
                 Text(
                     text = "${displayData.employee.name}" + if (displayData.employee.surname.isNotEmpty()) " (${displayData.employee.surname})" else "",
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -209,13 +211,16 @@ fun EmployeeCard(
                 ) {
                     Text(
                         text = "🏗️",
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = displayData.workName,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        modifier = Modifier.weight(1f, fill = false)
                     )
                 }
                 Spacer(modifier = Modifier.height(2.dp))
@@ -226,14 +231,16 @@ fun EmployeeCard(
                 ) {
                     Text(
                         text = "💰",
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${displayData.currentTotalDays} ${strings.days}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = TailwindBlue,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
                     )
                 }
             }
@@ -272,7 +279,8 @@ fun AddNewEmployeeButton(
             Text(
                 text = strings.addNewEmployee,
                 style = MaterialTheme.typography.titleLarge,
-                color = TailwindBlue
+                color = TailwindBlue,
+                maxLines = 1
             )
         }
     }

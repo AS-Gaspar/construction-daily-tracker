@@ -178,26 +178,32 @@ fun PayrollPeriodCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Period dates
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "📅",
-                            style = MaterialTheme.typography.headlineSmall
+                            style = MaterialTheme.typography.headlineSmall,
+                            maxLines = 1
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = formatPeriodLabel(strings, period.periodStartDate, period.periodEndDate),
                             style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            modifier = Modifier.weight(1f, fill = false)
                         )
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "${period.periodStartDate} to ${period.periodEndDate}",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1
                     )
                 }
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 // Status badge
                 if (period.isCurrent) {
@@ -208,7 +214,8 @@ fun PayrollPeriodCard(
                         Text(
                             text = strings.statusCurrent,
                             style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            maxLines = 1
                         )
                     }
                 } else {
@@ -219,7 +226,8 @@ fun PayrollPeriodCard(
                         Text(
                             text = strings.statusClosed,
                             style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            maxLines = 1
                         )
                     }
                 }
@@ -235,28 +243,32 @@ fun PayrollPeriodCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 // Employee count
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "👷", style = MaterialTheme.typography.bodyLarge)
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                    Text(text = "👷", style = MaterialTheme.typography.bodyLarge, maxLines = 1)
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "${period.payrolls.size} ${strings.employeesTitle}",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1
                     )
                 }
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 // Total payment
                 val totalPayment = period.payrolls.sumOf {
                     it.totalPayment.toDoubleOrNull() ?: 0.0
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "💰", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = "💰", style = MaterialTheme.typography.bodyLarge, maxLines = 1)
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "R$ ${String.format("%.2f", totalPayment)}",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = TailwindBlue
+                        color = TailwindBlue,
+                        maxLines = 1
                     )
                 }
             }
@@ -268,7 +280,8 @@ fun PayrollPeriodCard(
                     text = strings.tapToViewEmployeeList,
                     style = MaterialTheme.typography.bodySmall,
                     color = TailwindBlue,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 2
                 )
             } else {
                 Spacer(modifier = Modifier.height(12.dp))
@@ -276,7 +289,8 @@ fun PayrollPeriodCard(
                     text = strings.tapToViewPayrollDetails,
                     style = MaterialTheme.typography.bodySmall,
                     color = TailwindGreen,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 2
                 )
             }
         }

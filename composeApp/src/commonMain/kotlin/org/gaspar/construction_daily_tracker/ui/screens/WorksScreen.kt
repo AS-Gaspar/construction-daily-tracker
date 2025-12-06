@@ -122,11 +122,14 @@ fun WorkCard(
             Text(
                 text = "🏗️",
                 style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier.padding(end = 16.dp)
+                modifier = Modifier.padding(end = 16.dp),
+                maxLines = 1
             )
             Text(
                 text = work.name,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 2,
+                modifier = Modifier.weight(1f)
             )
         }
     }
@@ -163,7 +166,8 @@ fun AddNewWorkButton(
             Text(
                 text = strings.addNewWork,
                 style = MaterialTheme.typography.titleLarge,
-                color = TailwindBlue
+                color = TailwindBlue,
+                maxLines = 1
             )
         }
     }

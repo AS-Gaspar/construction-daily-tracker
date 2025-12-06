@@ -94,13 +94,15 @@ fun RolesScreen(
                         Text(
                             text = strings.noJobRoles,
                             style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = strings.roleExamples,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 3
                         )
                     }
                 }
@@ -142,11 +144,14 @@ fun RoleCard(
             Text(
                 text = "🔧",
                 style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier.padding(end = 16.dp)
+                modifier = Modifier.padding(end = 16.dp),
+                maxLines = 1
             )
             Text(
                 text = role.title,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 2,
+                modifier = Modifier.weight(1f)
             )
         }
     }
