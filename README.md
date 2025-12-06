@@ -8,6 +8,8 @@
 
 ---
 
+## APK para download: [Link](https://drive.google.com/drive/folders/1PtZLVo6KCa1w9JP4mgLfaEJYqMlMlMFC?usp=sharing)
+
 ## 📖 Sobre o Projeto
 
 Gerenciar a folha de pagamento na construção civil é complicado, especialmente quando você precisa cuidar de diversas obras e calcular dias trabalhados com precisão. O **Construction Daily Tracker** resolve esses desafios com uma solução local e offline.
