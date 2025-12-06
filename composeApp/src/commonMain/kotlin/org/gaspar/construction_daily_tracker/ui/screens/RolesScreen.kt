@@ -4,13 +4,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.gaspar.construction_daily_tracker.i18n.Strings
 import org.gaspar.construction_daily_tracker.model.Role
+
+// Tailwind blue-600
+private val TailwindBlue = Color(0xFF2563EB)
 
 /**
  * Screen for managing job roles.
@@ -32,19 +39,35 @@ fun RolesScreen(
                 title = { Text(strings.rolesTitle) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Text("←", style = MaterialTheme.typography.headlineMedium)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = strings.back
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = onRefresh) {
                         Text("🔄")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = TailwindBlue,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White
+                )
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddRole) {
-                Text("➕", style = MaterialTheme.typography.headlineSmall)
+            FloatingActionButton(
+                onClick = onAddRole,
+                containerColor = TailwindBlue,
+                contentColor = Color.White
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = strings.add
+                )
             }
         }
     ) { padding ->
@@ -56,7 +79,8 @@ fun RolesScreen(
             when {
                 isLoading -> {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
+                        color = TailwindBlue
                     )
                 }
                 roles.isEmpty() -> {
@@ -133,6 +157,7 @@ fun RoleCard(
  */
 @Composable
 fun AddRoleDialog(
+    strings: Strings,
     role: Role? = null,
     onDismiss: () -> Unit,
     onConfirm: (title: String) -> Unit
@@ -142,7 +167,7 @@ fun AddRoleDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (role == null) "Add Job Role" else "Edit Role") },
+        title = { Text(if (role == null) strings.addRole else strings.edit) },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -150,8 +175,8 @@ fun AddRoleDialog(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Role Title") },
-                    placeholder = { Text("Carpenter, Electrician, etc.") },
+                    label = { Text(strings.roleTitle) },
+                    placeholder = { Text(strings.roleTitleHint) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -169,7 +194,7 @@ fun AddRoleDialog(
             TextButton(
                 onClick = {
                     when {
-                        title.isBlank() -> errorMessage = "Role title is required"
+                        title.isBlank() -> errorMessage = strings.required
                         else -> {
                             onConfirm(title.trim())
                             onDismiss()
@@ -177,12 +202,12 @@ fun AddRoleDialog(
                     }
                 }
             ) {
-                Text(if (role == null) "Add" else "Save")
+                Text(if (role == null) strings.add else strings.save)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(strings.cancel)
             }
         }
     )

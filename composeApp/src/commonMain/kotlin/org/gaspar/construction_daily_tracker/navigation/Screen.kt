@@ -11,8 +11,6 @@ sealed class Screen(val route: String, val title: String) {
     data object UnassignedEmployees : Screen("unassigned-employees", "Unassigned Employees")
     data object DailyAdjustments : Screen("adjustments", "Daily Work")
     data object Payroll : Screen("payroll", "Monthly Payroll")
-    data object Settings : Screen("settings", "API Settings")
-    data object Configuration : Screen("configuration", "Configuration")
 
     // Detail screens
     data class EmployeeDetail(val employeeId: Int? = null) :

@@ -68,6 +68,17 @@ android {
     }
 }
 
+// Disable JDK image transform to avoid jlink requirement
+configurations.all {
+    resolutionStrategy {
+        force("com.android.tools:desugar_jdk_libs:2.0.4")
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.addAll(listOf("-Xlint:none", "-nowarn"))
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
     add("kspAndroid", libs.androidx.room.compiler)

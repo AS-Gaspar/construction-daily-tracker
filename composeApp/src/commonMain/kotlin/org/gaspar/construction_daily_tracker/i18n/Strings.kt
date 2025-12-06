@@ -178,25 +178,6 @@ interface Strings {
     val noEmployeesInWorkPayroll: String
     val employeesInWork: String
 
-    // Settings Screen
-    val apiSettings: String
-    val serverUrl: String
-    val apiKey: String
-    val testConnection: String
-    val connectionSuccess: String
-    val connectionFailed: String
-    val saveSettings: String
-    val languageSettings: String
-    val selectLanguage: String
-
-    // Configuration Screen
-    val apiConfiguration: String
-    val apiConfigurationDescription: String
-    val rolesConfiguration: String
-    val rolesConfigurationDescription: String
-    val configurationInfo: String
-    val configurationInfoDescription: String
-
     // Validation messages
     val required: String
     val invalidValue: String
@@ -218,213 +199,6 @@ interface Strings {
     val monthOctober: String
     val monthNovember: String
     val monthDecember: String
-}
-
-/**
- * English strings implementation.
- */
-class EnglishStrings : Strings {
-    override val back = "Back"
-    override val save = "Save"
-    override val cancel = "Cancel"
-    override val delete = "Delete"
-    override val edit = "Edit"
-    override val confirm = "Confirm"
-    override val refresh = "Refresh"
-    override val loading = "Loading..."
-    override val error = "Error"
-    override val success = "Success"
-    override val ok = "OK"
-    override val yes = "Yes"
-    override val no = "No"
-
-    override val appName = "Construction Daily Tracker"
-    override val homeTitle = "Home"
-    override val worksTitle = "Works"
-    override val worksDescription = "Manage construction sites"
-    override val rolesTitle = "Roles"
-    override val rolesDescription = "Manage job roles"
-    override val employeesTitle = "Employees"
-    override val employeesDescription = "Manage employees and their roles"
-    override val dailyAdjustmentsTitle = "Daily Adjustments"
-    override val dailyAdjustmentsDescription = "Track work adjustments"
-    override val payrollTitle = "Payroll"
-    override val payrollDescription = "View monthly payrolls"
-    override val settingsTitle = "Settings"
-    override val configurationTitle = "Configuration"
-    override val unassignedEmployeesDescription = "Employees without work assignment"
-
-    override val addWork = "Add Work"
-    override val addNewWork = "Add New Work"
-    override val addConstructionSite = "Add Construction Site"
-    override val editSite = "Edit Site"
-    override val workName = "Work Name"
-    override val enterWorkName = "Enter work name"
-    override val workNameHint = "e.g., Building Construction Site"
-    override val workNameRequired = "Work name is required"
-    override val noWorks = "No works available"
-    override val workDetails = "Work Details"
-    override val editWork = "Edit Work"
-    override val deleteWork = "Delete Work"
-    override val deleteWorkConfirm = "Are you sure you want to delete this work?"
-    override val deleteWorkConfirmQuestion = "Are you sure you want to delete"
-    override val actionCannotBeUndone = "This action cannot be undone."
-    override val workNotFound = "Work not found"
-    override val workInformation = "Work Information"
-    override val work = "Work"
-    override val assignedEmployees = "Assigned Employees"
-    override val add = "Add"
-    override val deleteWorkWarning = "⚠️ Warning: This work has employees assigned. Deleting it may affect their records."
-
-    override val addRole = "Add Role"
-    override val roleTitle = "Role Title"
-    override val enterRoleTitle = "Enter role title"
-    override val roleTitleHint = "e.g., Carpenter, Electrician"
-    override val noRoles = "No roles available"
-
-    override val addEmployee = "Add Employee"
-    override val addNewEmployee = "Add New Employee"
-    override val employeeName = "Name"
-    override val employeeSurname = "Surname"
-    override val selectRole = "Select Role"
-    override val selectWork = "Select Work"
-    override val dailyValue = "Daily Value"
-    override val noEmployees = "No employees available"
-    override val employeeDetails = "Employee Details"
-    override val editEmployee = "Edit Employee"
-    override val deleteEmployee = "Delete Employee"
-    override val deleteEmployeeConfirm = "Are you sure you want to delete this employee?"
-    override val unassignedEmployees = "Unassigned Employees"
-    override val unassignedEmployeesCount = "unassigned"
-    override val employee = "employee"
-    override val employees = "employees"
-    override val allEmployeesAssigned = "All employees assigned!"
-    override val noEmployeesUnassigned = "No employees are currently unassigned."
-    override val employeesWithoutWork = "Employees without work assignment"
-    override val clickToAssignWork = "Click on an employee to assign them to a work"
-    override val noUnassignedEmployees = "All employees are assigned to works"
-    override val assignToWork = "Assign to Work"
-    override val optional = "optional"
-    override val days = "days"
-    override val unknown = "Unknown"
-    override val noWork = "No Work"
-    override val employeeNotFound = "Employee not found"
-    override val employeeInformation = "Employee Information"
-    override val profession = "Profession"
-    override val workSite = "Work Site"
-    override val currentTotalDays = "Current Total Days"
-    override val thisMonthWorkdays = "This month's workdays"
-    override val currentTotalDaysFormula = "Current total days = Base workdays + Adjustments (overtime, absences, etc.)"
-    override val deleteEmployeeQuestion = "Are you sure you want to delete"
-    override val assignWorkDialogTitle = "Assign to Work"
-    override val missingWorksAndRoles = "Please create at least one Work and one Role before adding employees."
-    override val name = "Name"
-    override val surname = "Surname"
-
-    override val addAdjustment = "Add Adjustment"
-    override val adjustmentDate = "Adjustment Date"
-    override val selectDate = "Select date"
-    override val adjustmentValue = "Adjustment Value"
-    override val selectValue = "Select value"
-    override val notes = "Notes"
-    override val notesOptional = "Notes (optional)"
-    override val notesPlaceholder = "e.g., Worked on Saturday, Half-day sick leave"
-    override val noDayAdjustments = "No day adjustments available"
-    override val addAdjustmentValue = "Add Adjustment Value"
-    override val saveAdjustment = "Save Adjustment"
-    override val saving = "Saving..."
-    override val pleaseSelectDate = "Please select a date"
-    override val pleaseSelectValue = "Please select an adjustment value"
-    override val adjustmentAdded = "Adjustment added successfully!"
-    override val adjustmentsHistory = "Adjustments History"
-    override val date = "Date"
-    override val value = "Value"
-    override val note = "Note"
-    override val viewNote = "View Note"
-    override val noAdjustments = "No adjustments found"
-    override val noteDialogTitle = "Adjustment Note"
-    override val noNoteAvailable = "No note available"
-    override val deleteAdjustment = "Delete Adjustment"
-    override val deleteAdjustmentConfirm = "Are you sure you want to delete this adjustment?"
-
-    override val fullDayWork = "+1.0 days (e.g., Saturday work)"
-    override val halfDayWork = "+0.5 days (e.g., half-day work)"
-    override val halfDayAbsence = "-0.5 days (e.g., half-day absence)"
-    override val fullDayAbsence = "-1.0 days (e.g., full-day absence)"
-    override val saturdayWork = "Saturday work"
-    override val sickLeave = "Sick leave"
-    override val dailyWorkAdjustments = "Daily Work Adjustments"
-    override val addWorkAdjustment = "Add Work Adjustment"
-    override val noAdjustmentsYet = "No adjustments yet"
-    override val adjustmentExamples = "Add work adjustments like:\n• +1 for Saturday work\n• -0.5 for half-day absence"
-
-    override val currentPeriod = "Current Period"
-    override val closedPeriods = "Closed Periods"
-    override val noPayrolls = "No payrolls available"
-    override val periodRange = "Period"
-    override val baseWorkdays = "Base Workdays"
-    override val finalWorkedDays = "Final Worked Days"
-    override val totalPayment = "Total Payment"
-    override val closedAt = "Closed At"
-    override val employeeLabel = "Employee"
-    override val workLabel = "Work"
-    override val roleLabel = "Role"
-    override val generatePayroll = "Generate Payroll"
-    override val closePayroll = "Close Payroll"
-    override val noPayrollHistory = "No payroll history yet"
-    override val payrollPeriodInfo = "Payroll periods will appear here once generated.\nPeriods run from 6th to 5th of each month."
-    override val statusCurrent = "CURRENT"
-    override val statusClosed = "CLOSED"
-    override val noPayrollDataFound = "No payroll data found"
-    override val closedPayrollPeriod = "Closed Payroll Period"
-    override val adjustments = "Adjustments"
-    override val noJobRoles = "No job roles yet"
-    override val roleExamples = "Add roles like Carpenter, Electrician, etc."
-    override val tapToViewEmployeeList = "→ Tap to view employee list"
-    override val tapToViewPayrollDetails = "→ Tap to view payroll details"
-    override val payrollByWorks = "Payroll by Works"
-    override val workPayrollDetails = "Work Payroll Details"
-    override val totalToPay = "Total to Pay"
-    override val viewEmployeeDetails = "View Details"
-    override val noWorksInPayroll = "No works with employees in this payroll period"
-    override val noEmployeesInWorkPayroll = "No employees in this work for this period"
-    override val employeesInWork = "Employees in Work"
-
-    override val apiSettings = "API Settings"
-    override val serverUrl = "Server URL"
-    override val apiKey = "API Key"
-    override val testConnection = "Test Connection"
-    override val connectionSuccess = "Connection successful!"
-    override val connectionFailed = "Connection failed"
-    override val saveSettings = "Save Settings"
-    override val languageSettings = "Language"
-    override val selectLanguage = "Select Language"
-
-    override val apiConfiguration = "API Settings"
-    override val apiConfigurationDescription = "Configure server URL and API key"
-    override val rolesConfiguration = "Roles"
-    override val rolesConfigurationDescription = "Manage job roles (carpenter, electrician, etc.)"
-    override val configurationInfo = "Configuration"
-    override val configurationInfoDescription = "Manage app settings and advanced features here."
-
-    override val required = "Required"
-    override val invalidValue = "Invalid value"
-    override val mustBePositive = "Must be positive"
-
-    override val dateFormat = "yyyy-MM-dd"
-
-    override val monthJanuary = "January"
-    override val monthFebruary = "February"
-    override val monthMarch = "March"
-    override val monthApril = "April"
-    override val monthMay = "May"
-    override val monthJune = "June"
-    override val monthJuly = "July"
-    override val monthAugust = "August"
-    override val monthSeptember = "September"
-    override val monthOctober = "October"
-    override val monthNovember = "November"
-    override val monthDecember = "December"
 }
 
 /**
@@ -597,23 +371,6 @@ class PortugueseStrings : Strings {
     override val noEmployeesInWorkPayroll = "Nenhum funcionário nesta obra para este período"
     override val employeesInWork = "Funcionários na Obra"
 
-    override val apiSettings = "Configurações da API"
-    override val serverUrl = "URL do Servidor"
-    override val apiKey = "Chave da API"
-    override val testConnection = "Testar Conexão"
-    override val connectionSuccess = "Conexão bem-sucedida!"
-    override val connectionFailed = "Falha na conexão"
-    override val saveSettings = "Salvar Configurações"
-    override val languageSettings = "Idioma"
-    override val selectLanguage = "Selecionar Idioma"
-
-    override val apiConfiguration = "Configurações da API"
-    override val apiConfigurationDescription = "Configurar URL do servidor e chave da API"
-    override val rolesConfiguration = "Funções"
-    override val rolesConfigurationDescription = "Gerenciar funções de trabalho (pedreiro, eletricista, etc.)"
-    override val configurationInfo = "Configuração"
-    override val configurationInfoDescription = "Gerenciar configurações do aplicativo e recursos avançados aqui."
-
     override val required = "Obrigatório"
     override val invalidValue = "Valor inválido"
     override val mustBePositive = "Deve ser positivo"
@@ -635,11 +392,8 @@ class PortugueseStrings : Strings {
 }
 
 /**
- * Get strings for the specified language.
+ * Get Portuguese strings.
  */
-fun getStrings(language: Language): Strings {
-    return when (language) {
-        Language.ENGLISH -> EnglishStrings()
-        Language.PORTUGUESE -> PortugueseStrings()
-    }
+fun getStrings(): Strings {
+    return PortugueseStrings()
 }

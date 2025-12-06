@@ -288,7 +288,7 @@ fun EmployeeViewScreen(
                                 modifier = Modifier.padding(16.dp)
                             ) {
                                 Text(
-                                    text = "ℹ️ ${strings.configurationInfo}",
+                                    text = "ℹ️ Informação",
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold
                                 )

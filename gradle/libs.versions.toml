@@ -1,7 +1,7 @@
 [versions]
-agp = "8.12.0"
+agp = "8.7.3"
 android-compileSdk = "35"
-android-minSdk = "24"
+android-minSdk = "26"
 android-targetSdk = "35"
 androidx-activity = "1.9.3"
 androidx-appcompat = "1.7.1"
@@ -28,6 +28,7 @@ jbcrypt = "0.4"
 androidx-security = "1.1.0-alpha06"
 androidx-room = "2.6.1"
 ksp = "2.1.0-1.0.29"
+desugar-jdk-libs = "2.0.4"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -88,6 +89,9 @@ ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", vers
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
+
+# Desugaring
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 
 
 [plugins]

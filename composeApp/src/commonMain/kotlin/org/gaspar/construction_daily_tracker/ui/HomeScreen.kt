@@ -33,12 +33,13 @@ fun HomeScreen(
     strings: Strings,
     onNavigate: (Screen) -> Unit
 ) {
-    // Only show main feature buttons: Works, Employees, Monthly Payroll
+    // Main menu items including Roles
     val menuItems = listOf(
         MenuItem(strings.worksTitle, Screen.Works, "🏗️", strings.worksDescription),
         MenuItem(strings.employeesTitle, Screen.Employees, "👷", strings.employeesDescription),
-        MenuItem(strings.unassignedEmployees, Screen.UnassignedEmployees, "⚠️", strings.unassignedEmployeesDescription),
-        MenuItem(strings.payrollTitle, Screen.Payroll, "💰", strings.payrollDescription)
+        MenuItem(strings.rolesTitle, Screen.Roles, "🔧", "Gerenciar funções de trabalho"),
+        MenuItem(strings.payrollTitle, Screen.Payroll, "💰", strings.payrollDescription),
+        MenuItem(strings.unassignedEmployees, Screen.UnassignedEmployees, "⚠️", strings.unassignedEmployeesDescription)
     )
 
     Scaffold(
@@ -51,19 +52,6 @@ fun HomeScreen(
                     titleContentColor = Color.White
                 )
             )
-        },
-        floatingActionButton = {
-            // Configuration button in the lower right corner
-            FloatingActionButton(
-                onClick = { onNavigate(Screen.Configuration) },
-                containerColor = Color(0xFF2563EB),
-                contentColor = Color.White
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = strings.configurationTitle
-                )
-            }
         }
     ) { padding ->
         LazyVerticalGrid(

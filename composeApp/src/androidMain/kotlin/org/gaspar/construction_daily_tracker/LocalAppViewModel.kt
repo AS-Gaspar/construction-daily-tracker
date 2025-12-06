@@ -4,11 +4,9 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import org.gaspar.construction_daily_tracker.data.CredentialStorage
 import org.gaspar.construction_daily_tracker.database.AppDatabase
-import org.gaspar.construction_daily_tracker.i18n.Language
 import org.gaspar.construction_daily_tracker.i18n.Strings
-import org.gaspar.construction_daily_tracker.i18n.getStrings
+import org.gaspar.construction_daily_tracker.i18n.PortugueseStrings
 import org.gaspar.construction_daily_tracker.model.*
 import org.gaspar.construction_daily_tracker.navigation.NavigationState
 import org.gaspar.construction_daily_tracker.repository.*
@@ -17,8 +15,7 @@ import org.gaspar.construction_daily_tracker.repository.*
  * Main ViewModel for the app, managing all data and navigation using local database.
  */
 class LocalAppViewModel(
-    private val database: AppDatabase,
-    private val credentialStorage: CredentialStorage
+    private val database: AppDatabase
 ) : ViewModel() {
 
     // Navigation
@@ -41,12 +38,8 @@ class LocalAppViewModel(
     var successMessage by mutableStateOf<String?>(null)
         private set
 
-    // Language state
-    var currentLanguage by mutableStateOf(Language.fromCode(credentialStorage.getLanguage()))
-        private set
-
-    var strings by mutableStateOf<Strings>(getStrings(currentLanguage))
-        private set
+    // Strings always in Portuguese
+    val strings: Strings = PortugueseStrings()
 
     init {
         // Load initial data
@@ -74,15 +67,6 @@ class LocalAppViewModel(
     var showAddRoleDialog by mutableStateOf(false)
     var showAddAdjustmentDialog by mutableStateOf(false)
     var showGeneratePayrollDialog by mutableStateOf(false)
-
-    /**
-     * Change the app language.
-     */
-    fun changeLanguage(language: Language) {
-        currentLanguage = language
-        strings = getStrings(language)
-        credentialStorage.saveLanguage(language.code)
-    }
 
     /**
      * Refresh all data from the local database.

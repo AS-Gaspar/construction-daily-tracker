@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import org.gaspar.construction_daily_tracker.data.CredentialStorage
 import org.gaspar.construction_daily_tracker.database.AppDatabase
 import org.gaspar.construction_daily_tracker.navigation.Screen
 import org.gaspar.construction_daily_tracker.ui.*
@@ -15,8 +14,7 @@ actual fun App() {
     val context = LocalContext.current
     val viewModel = remember {
         val database = AppDatabase.getInstance(context)
-        val credentialStorage = CredentialStorage(context)
-        LocalAppViewModel(database, credentialStorage)
+        LocalAppViewModel(database)
     }
 
     MaterialTheme {
@@ -34,6 +32,7 @@ actual fun App() {
 
         if (viewModel.showAddRoleDialog) {
             AddRoleDialog(
+                strings = viewModel.strings,
                 onDismiss = { viewModel.showAddRoleDialog = false },
                 onConfirm = { title -> viewModel.createRole(title) }
             )
@@ -300,25 +299,6 @@ private fun AppContent(viewModel: LocalAppViewModel) {
                 onEmployeeClick = { employeeId ->
                     viewModel.navigationState.navigateTo(Screen.EmployeeDetail(employeeId))
                 }
-            )
-        }
-
-        Screen.Settings -> {
-            SettingsScreen(
-                currentLanguage = viewModel.currentLanguage,
-                strings = viewModel.strings,
-                onBack = { viewModel.navigationState.navigateBack() },
-                onLanguageChange = { language ->
-                    viewModel.changeLanguage(language)
-                }
-            )
-        }
-
-        Screen.Configuration -> {
-            ConfigurationScreen(
-                strings = viewModel.strings,
-                onNavigate = { viewModel.navigationState.navigateTo(it) },
-                onBack = { viewModel.navigationState.navigateBack() }
             )
         }
 
