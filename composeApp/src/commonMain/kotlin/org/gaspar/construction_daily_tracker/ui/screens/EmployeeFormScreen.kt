@@ -46,12 +46,12 @@ fun EmployeeFormScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (employee == null) "Add Employee" else "Edit Employee") },
+                title = { Text(if (employee == null) strings.addEmployee else strings.editEmployee) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -75,7 +75,7 @@ fun EmployeeFormScreen(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Full Name") },
+                label = { Text(strings.name) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading
@@ -85,7 +85,7 @@ fun EmployeeFormScreen(
             OutlinedTextField(
                 value = surname,
                 onValueChange = { surname = it },
-                label = { Text("Surname") },
+                label = { Text(strings.surname) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading
@@ -97,10 +97,10 @@ fun EmployeeFormScreen(
                 onExpandedChange = { showWorkDropdown = !showWorkDropdown && !isLoading }
             ) {
                 OutlinedTextField(
-                    value = selectedWorkId?.let { id -> works.find { it.id == id }?.name } ?: "No Work",
+                    value = selectedWorkId?.let { id -> works.find { it.id == id }?.name } ?: strings.noWork,
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Construction Name") },
+                    label = { Text(strings.selectWork) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = showWorkDropdown) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -113,7 +113,7 @@ fun EmployeeFormScreen(
                 ) {
                     // "No Work" option
                     DropdownMenuItem(
-                        text = { Text("No Work") },
+                        text = { Text(strings.noWork) },
                         onClick = {
                             selectedWorkId = null
                             showWorkDropdown = false
@@ -139,10 +139,10 @@ fun EmployeeFormScreen(
                 onExpandedChange = { showRoleDropdown = !showRoleDropdown && !isLoading }
             ) {
                 OutlinedTextField(
-                    value = roles.find { it.id == selectedRoleId }?.title ?: "Select Role",
+                    value = roles.find { it.id == selectedRoleId }?.title ?: strings.selectRole,
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Job Role") },
+                    label = { Text(strings.selectRole) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = showRoleDropdown) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -169,7 +169,7 @@ fun EmployeeFormScreen(
             OutlinedTextField(
                 value = dailyValue,
                 onValueChange = { dailyValue = it },
-                label = { Text("Daily Rate ($)") },
+                label = { Text(strings.dailyValue) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -192,10 +192,10 @@ fun EmployeeFormScreen(
             Button(
                 onClick = {
                     when {
-                        name.isBlank() -> errorMessage = "First name is required"
-                        dailyValue.isBlank() -> errorMessage = "Daily rate is required"
-                        dailyValue.toDoubleOrNull() == null -> errorMessage = "Invalid daily rate"
-                        selectedRoleId == 0 -> errorMessage = "Please select a role"
+                        name.isBlank() -> errorMessage = "${strings.name} é ${strings.required.lowercase()}"
+                        dailyValue.isBlank() -> errorMessage = "${strings.dailyValue} é ${strings.required.lowercase()}"
+                        dailyValue.toDoubleOrNull() == null -> errorMessage = strings.invalidValue
+                        selectedRoleId == 0 -> errorMessage = "Por favor, selecione uma função"
                         else -> {
                             errorMessage = null
                             onSave(name.trim(), surname.trim(), selectedRoleId, selectedWorkId, dailyValue.trim())
@@ -215,7 +215,7 @@ fun EmployeeFormScreen(
                         color = Color.White
                     )
                 } else {
-                    Text(if (employee == null) "Add Employee" else "Save Changes")
+                    Text(if (employee == null) strings.addEmployee else strings.save)
                 }
             }
 
@@ -229,7 +229,7 @@ fun EmployeeFormScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "⚠️ Setup Required",
+                            text = "⚠️ Configuração Necessária",
                             style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
